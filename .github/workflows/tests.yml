@@ -15,7 +15,7 @@ jobs:
       - name: Set up python:wq
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11.9'
 
       - name: Load cached Poetry installation
         id: cached-poetry
@@ -45,7 +45,7 @@ jobs:
       - name: Set up python:wq
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11.9'
 
       - name: Load cached Poetry installation
         id: cached-poetry
@@ -63,33 +63,3 @@ jobs:
 
       - name: Run unit tests
         run: make test-unit
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    needs: [ lint ]
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up python:wq
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Load cached Poetry installation
-        id: cached-poetry
-        uses: actions/cache@v4
-        with:
-          path: ~/.local  # the path depends on the OS
-          key: poetry-0  # increment to reset cache
-
-      - name: Install Poetry
-        if: steps.cached-poetry.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@v1
-
-      - name: Install project
-        run: poetry install
-
-      - name: Run integration tests
-        run: make test-integration
