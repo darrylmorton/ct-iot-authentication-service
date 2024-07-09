@@ -1,21 +1,18 @@
 from jose import jwt
 
 from authentication_service.service import server
-from config import APP_VERSION, JWT_SECRET
-from tests.helper.routes_helper import (
-    mock_http_client,
-    mock_http_post_client,
-)
+from config import JWT_SECRET
+from tests.helper.jwt_helper import create_token_expiry
+from tests.helper.routes_helper import mock_http_post_client
 
 
-class TestRoutes:
+class TestJwt:
     username = "foo@home.com"
-
-    async def test_health(self):
-        response = await mock_http_client(server, "http://test", "healthz")
-
-        assert response.status_code == 200
-        assert response.json() == {"message": "ok", "version": APP_VERSION}
+    token = jwt.encode(
+        {"username": username, "exp": create_token_expiry()},
+        JWT_SECRET,
+        algorithm="HS256",
+    )
 
     async def test_post_jwt_missing_username(self):
         payload = {}

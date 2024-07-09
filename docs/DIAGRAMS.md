@@ -4,11 +4,26 @@ title: Authentication Service Flow Chart
 ---
 
 flowchart LR
-    HttpRequest(Request) -->|GET - /auth| AuthenticationService[Authentication Service]
+    HttpRequest(Request) -->|POST - /jwt| AuthenticationService[Authentication Service]
     AuthenticationService -->|JWT| Errors{Errors?}
-    Errors -->|yes| ExpiredJwtResponse[401 - Expired JWT]
-    Errors -->|yes| InvalidJwtResponse[401 - Invalid JWT]
-%%    Errors -->|yes| UserDoesNotExistResponse[401 - User Does Not Exist]
-%%    Errors -->|yes| UserAccountDisabledResponse[401 - User Account Disabled]
-    Errors -->|no| SuccessResponse[200 - Success]
+    Errors -->|yes| ValidationError[401 - Unauthorised error]
+    Errors -->|yes| KeyError[401 - Unauthorised error]
+    Errors -->|yes| TypeError[401 - Unauthorised error]
+    Errors -->|yes| JWTError[401 - Unauthorised error]
+    Errors -->|no| SuccessResponse[201 - Success]
+```
+
+```mermaid
+---
+title: Authentication Service Flow Chart
+---
+
+flowchart LR
+    HttpRequest(Request) -->|GET - /jwt| AuthenticationService[Authentication Service]
+    AuthenticationService -->|JWT| Errors{Errors?}
+    Errors -->|yes| KeyError[401 - Unauthorised error]
+    Errors -->|yes| ExpiredSignatureError[401 - Unauthorised error]
+    Errors -->|yes| JWTError[401 - Unauthorised error]
+    Errors -->|yes| ValidationError[401 - Unauthorised error]
+    Errors -->|no| SuccessResponse[201 - Success]
 ```

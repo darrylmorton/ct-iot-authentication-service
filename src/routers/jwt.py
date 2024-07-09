@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 @router.post("/jwt", status_code=HTTPStatus.CREATED)
-async def create_jwt(req: Request) -> JSONResponse:
+async def jwt_create(req: Request) -> JSONResponse:
     try:
         payload = await req.json()
 
@@ -51,7 +51,7 @@ async def create_jwt(req: Request) -> JSONResponse:
         log.debug(f"jwt create {error}")
 
         return JSONResponse(
-            status_code=HTTPStatus.UNAUTHORIZED, content="*** Unauthorised error"
+            status_code=HTTPStatus.UNAUTHORIZED, content="Unauthorised error"
         )
     except JWTError as error:
         log.debug(f"jwt create {error}")
@@ -59,24 +59,20 @@ async def create_jwt(req: Request) -> JSONResponse:
         raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=error)
 
 
-@router.get("/jwt/verify", status_code=HTTPStatus.OK)
+@router.get("/jwt", status_code=HTTPStatus.OK)
 async def jwt_verify(req: Request) -> JSONResponse:
-    auth_token = req.headers["Authorization"]
-
-    if not auth_token:
-        raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED)
-
     try:
+        auth_token = req.headers["Authorization"]
+
+        if not auth_token:
+            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED)
+
         payload = jwt.decode(auth_token, config.JWT_SECRET, algorithms=["HS256"])
 
         JwtVerify.model_validate(payload)
 
-        # if username:
         return JSONResponse(status_code=HTTPStatus.OK, content="Success")
-        # else:
-        #     raise HTTPException(
-        #         status_code=HTTPStatus.UNAUTHORIZED, detail="invalid jwt"
-        #     )
+
     except KeyError as error:
         log.debug(f"verify_jwt - invalid key {error}")
 
@@ -95,8 +91,8 @@ async def jwt_verify(req: Request) -> JSONResponse:
         return JSONResponse(
             status_code=HTTPStatus.UNAUTHORIZED, content="Invalid token error"
         )
-    except TypeError as error:
-        log.debug(f"verify_jwt - invalid username {error}")
+    except ValidationError as error:
+        log.debug(f"verify_jwt - invalid token {error}")
 
         return JSONResponse(
             status_code=HTTPStatus.UNAUTHORIZED, content="Invalid token error"
