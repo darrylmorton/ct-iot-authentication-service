@@ -8,3 +8,4 @@ venv/
 *.log
 htmlcov/
 .coverage
+.ruff_cache
