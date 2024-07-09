@@ -23,7 +23,5 @@ async def lifespan_wrapper(app: FastAPI):
 
 server = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
 
-
 server.include_router(health.router, include_in_schema=False)
-
 server.include_router(jwt.router, prefix="/api", tags=["jwt"])
