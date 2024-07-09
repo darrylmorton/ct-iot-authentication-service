@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  user-db:
+    container_name: postgres
+    image: postgres:16.0-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=users
+    healthcheck :
+      test: [ "CMD", "pg_isready", "-q", "-d", "users", "-U", "postgres" ]
+      interval : 5s
+      timeout : 5s
+      retries : 5
+
+  user-service:
+    container_name: user-service
+    image: ghcr.io/darrylmorton/ct-iot-user-service:0.0.1
+    ports:
+      - "8002:8002"
+    environment:
+      - DB_HOST=user-db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_PORT=5432
+      - DB_NAME=users
+    depends_on:
+      user-db:
+        condition: service_healthy
