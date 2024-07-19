@@ -8,7 +8,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 import config
-from tests.schemas import JwtVerify
+from schemas import JwtVerify
 from utils import auth_util
 
 from logger import log

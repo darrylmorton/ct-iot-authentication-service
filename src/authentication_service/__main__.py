@@ -1,11 +1,12 @@
 import os
 import uvicorn
 
-from config import SERVICE_NAME, APP_PORT
+import config
+from config import SERVICE_NAME
 from logger import log
 
 
-def main(port: int = APP_PORT):
+def main():
     log.info(f"Starting {SERVICE_NAME}...")
 
     try:
@@ -20,8 +21,8 @@ def main(port: int = APP_PORT):
 
         uvicorn.run(
             app="authentication_service.service.server",
-            host="0.0.0.0",
-            port=port,
+            host=config.APP_HOST,
+            port=config.APP_PORT,
             workers=calculated_workers,
             log_config=None,
         )

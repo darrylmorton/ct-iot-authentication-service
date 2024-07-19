@@ -12,6 +12,12 @@ python v3.11.9+
 poetry v1.7.1
 [user-service](https://github.com/darrylmorton/ct-iot-user-service)
 
+## Build
+
+```
+make build
+```
+
 ## Run
 
 ```
@@ -29,7 +35,3 @@ docker-compose up -d
 ```
 make test
 ```
-
-## Deployment
-
-Must be deployed **after** `user-service`.

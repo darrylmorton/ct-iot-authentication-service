@@ -34,6 +34,6 @@ COPY . .
 
 RUN ls -la
 
-CMD ["uvicorn", "auth_service.service:server"]
+CMD ["uvicorn", "authentication_service.service:server", "--host", "0.0.0.0"]
 
 EXPOSE 8001
