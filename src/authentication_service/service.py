@@ -18,7 +18,7 @@ oauth2_scheme.auto_error = False
 async def lifespan_wrapper(app: FastAPI):
     log.info(f"Starting {config.SERVICE_NAME}...{app.host}")
 
-    if config.ENVIRONMENT == 'production':
+    if config.ENVIRONMENT == "production":
         sentry_sdk.init(
             dsn=config.SENTRY_DSN,
             # Set traces_sample_rate to 1.0 to capture 100%
@@ -31,7 +31,6 @@ async def lifespan_wrapper(app: FastAPI):
             sample_rate=config.SENTRY_SAMPLE_RATE,
             environment=config.ENVIRONMENT,
             server_name=config.SERVICE_NAME,
-
             integrations=[
                 StarletteIntegration(
                     transaction_style="endpoint",
@@ -41,7 +40,7 @@ async def lifespan_wrapper(app: FastAPI):
                     transaction_style="endpoint",
                     failed_request_status_codes=[403, range(500, 599)],
                 ),
-            ]
+            ],
         )
 
     log.info(f"{config.SERVICE_NAME} is ready")

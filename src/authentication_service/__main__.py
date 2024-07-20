@@ -2,12 +2,11 @@ import os
 import uvicorn
 
 import config
-from config import SERVICE_NAME
 from logger import log
 
 
 def main():
-    log.info(f"Starting {SERVICE_NAME}...")
+    log.info(f"Starting {config.SERVICE_NAME}...")
 
     try:
         cores = os.cpu_count()
@@ -21,8 +20,6 @@ def main():
 
         uvicorn.run(
             app="authentication_service.service.server",
-            host=config.APP_HOST,
-            port=config.APP_PORT,
             workers=calculated_workers,
             log_config=None,
         )

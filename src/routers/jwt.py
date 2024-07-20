@@ -71,8 +71,10 @@ async def jwt_verify(req: Request) -> JSONResponse:
 
         JwtVerify.model_validate(payload)
 
-        return JSONResponse(status_code=HTTPStatus.OK, content="Success")
-
+        return JSONResponse(
+            status_code=HTTPStatus.OK,
+            content={"username": payload["username"]},
+        )
     except KeyError as error:
         log.debug(f"verify_jwt - invalid key {error}")
 

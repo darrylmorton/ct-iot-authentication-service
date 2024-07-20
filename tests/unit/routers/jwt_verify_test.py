@@ -16,8 +16,10 @@ class TestJwtVerify:
 
     async def test_valid_token(self):
         response = await mock_http_client(server, "http://test", "api/jwt", self.token)
+        actual_result = response.json()
 
         assert response.status_code == 200
+        assert actual_result["username"] == self.username
 
     async def test_missing_token(self):
         response = await mock_http_client(server, "http://test", "api/jwt", {})
