@@ -1,9 +1,23 @@
 from pathlib import Path
 
 import toml
+from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
+
+import config
 
 
-def get_app_version():
+def set_openapi_info(app: FastAPI) -> FastAPI:
+    app.openapi_schema = get_openapi(
+        title=config.SERVICE_NAME,
+        version=config.APP_VERSION,
+        routes=app.routes,
+    )
+
+    return app
+
+
+def get_app_version() -> str:
     app_version = None
 
     pyproject_toml_file = Path(__file__).parent.parent.parent / "pyproject.toml"
