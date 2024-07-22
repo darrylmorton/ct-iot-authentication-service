@@ -7,7 +7,7 @@ lint: fmt
 .PHONY: lint
 
 build: lint
-	DOCKER_BUILDKIT=1 docker build --target=runtime --progress=plain .
+	DOCKER_BUILDKIT=1 docker build --platform=linux/amd64 --target=runtime --progress=plain .
 .PHONY: build
 
 dev-server-start: fmt
@@ -15,7 +15,7 @@ dev-server-start: fmt
 .PHONY: dev-server-start
 
 server-start: fmt
-	poetry run uvicorn authentication_service.service:server &
+	poetry run uvicorn authentication_service.service:server
 .PHONY: server-start
 
 test-unit: fmt
