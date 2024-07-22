@@ -10,7 +10,6 @@ The `authentication-service` verifies JWTs, and creates them for login.
 
 python v3.11.9+  
 poetry v1.7.1
-[user-service](https://github.com/darrylmorton/ct-iot-user-service)
 
 ## Build
 
