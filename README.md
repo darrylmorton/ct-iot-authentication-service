@@ -1,7 +1,6 @@
 # ct-iot-things-report-request-service
 
 ## Description
-
 The `authentication-service` verifies JWTs, and creates them for login.
 
 [Diagrams](./docs/DIAGRAMS.md)
@@ -32,25 +31,27 @@ JWT_TOKEN_EXPIRY_SECONDS=
 ```
 
 ## Build
-
 ```
 make build
 ```
 
 ## Run
+### Develoment
+```
+make dev-server-start
+```
 
+### Production
 ```
 make server-start
 ```
 
 ### Test
-
 ```
 docker-compose up -d
 ```
 
 ### Run Tests
-
 ```
 make test
 ```
