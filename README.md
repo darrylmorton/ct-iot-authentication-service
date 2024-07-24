@@ -1,4 +1,4 @@
-# ct-iot-things-report-request-service
+# ct-iot-authentication-service
 
 ## Description
 The `authentication-service` verifies JWTs, and creates them for login.
