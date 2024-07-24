@@ -1,8 +1,10 @@
-from pydantic import BaseModel, EmailStr
+from uuid import UUID
+
+from pydantic import BaseModel
 
 
 class JwtVerifyBase(BaseModel):
-    username: EmailStr
+    id: UUID
 
 
 class JwtVerify(JwtVerifyBase):

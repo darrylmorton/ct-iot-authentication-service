@@ -26,7 +26,7 @@ async def jwt_create(req: Request) -> JSONResponse:
         token = {
             "token": jwt.encode(
                 {
-                    "username": payload["username"],
+                    "id": payload["id"],
                     "exp": auth_util.create_token_expiry(),
                 },
                 config.JWT_SECRET,
@@ -73,7 +73,7 @@ async def jwt_verify(req: Request) -> JSONResponse:
 
         return JSONResponse(
             status_code=HTTPStatus.OK,
-            content={"username": payload["username"]},
+            content={"id": payload["id"]},
         )
     except KeyError as error:
         log.debug(f"verify_jwt - invalid key {error}")

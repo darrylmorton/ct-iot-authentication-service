@@ -7,9 +7,9 @@ from tests.helper.routes_helper import mock_http_client
 
 
 class TestJwtVerify:
-    username = "foo@home.com"
+    id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     token = jwt.encode(
-        {"username": username, "exp": create_token_expiry()},
+        {"id": id, "exp": create_token_expiry()},
         JWT_SECRET,
         algorithm="HS256",
     )
@@ -19,7 +19,7 @@ class TestJwtVerify:
         actual_result = response.json()
 
         assert response.status_code == 200
-        assert actual_result["username"] == self.username
+        assert actual_result["id"] == self.id
 
     async def test_missing_token(self):
         response = await mock_http_client(server, "http://test", "api/jwt", {})
@@ -28,7 +28,7 @@ class TestJwtVerify:
 
     async def test_expired_token(self):
         expired_token = jwt.encode(
-            {"username": self.username, "exp": create_token_expiry(-1)},
+            {"id": self.id, "exp": create_token_expiry(-1)},
             JWT_SECRET,
             algorithm="HS256",
         )
@@ -39,9 +39,12 @@ class TestJwtVerify:
 
         assert response.status_code == 401
 
-    async def test_invalid_token_username_str(self):
+    async def test_invalid_token_id(self):
         invalid_token = jwt.encode(
-            {"username": "foo", "exp": create_token_expiry()},
+            {
+                "id": "1b7f4d5a-161d-4b3a-8b33",
+                "exp": create_token_expiry(),
+            },
             JWT_SECRET,
             algorithm="HS256",
         )
@@ -51,7 +54,7 @@ class TestJwtVerify:
 
         assert response.status_code == 401
 
-    async def test_invalid_token_missing_username(self):
+    async def test_invalid_token_missing_id(self):
         invalid_token = jwt.encode(
             {"exp": create_token_expiry()},
             JWT_SECRET,
@@ -65,7 +68,7 @@ class TestJwtVerify:
 
     async def test_invalid_token_secret(self):
         invalid_token = jwt.encode(
-            {"username": self.username, "exp": create_token_expiry()},
+            {"id": self.id, "exp": create_token_expiry()},
             "",
             algorithm="HS256",
         )

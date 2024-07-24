@@ -7,9 +7,9 @@ from tests.helper.routes_helper import mock_http_post_client
 
 
 class TestJwt:
-    username = "foo@home.com"
+    id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     token = jwt.encode(
-        {"username": username, "exp": create_token_expiry()},
+        {"id": id, "exp": create_token_expiry()},
         JWT_SECRET,
         algorithm="HS256",
     )
@@ -23,8 +23,8 @@ class TestJwt:
 
         assert response.status_code == 401
 
-    async def test_post_jwt_invalid_username(self):
-        payload = {"username": "foo"}
+    async def test_post_jwt_invalid_id(self):
+        payload = {"id": "1b7f4d5a-161d-4b3a-8b33"}
 
         response = await mock_http_post_client(
             server, "http://test", "api/jwt", payload
@@ -33,7 +33,7 @@ class TestJwt:
         assert response.status_code == 401
 
     async def test_post_jwt_success(self):
-        payload = {"username": self.username}
+        payload = {"id": self.id}
 
         response = await mock_http_post_client(
             server, "http://test", "api/jwt", payload
@@ -45,4 +45,4 @@ class TestJwt:
         )
 
         assert response.status_code == 201
-        assert actual_result["username"] == self.username
+        assert actual_result["id"] == self.id
