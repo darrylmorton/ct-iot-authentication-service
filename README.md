@@ -36,7 +36,7 @@ make build
 ```
 
 ## Run
-### Develoment
+### Development
 ```
 make dev-server-start
 ```
