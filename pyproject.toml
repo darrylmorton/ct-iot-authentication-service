@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ct-iot-authentication-service"
-version = "1.0.0"
+version = "1.0.1"
 description = "ct-iot-authentication-service"
 authors = ["Darryl Morton"]
 license = "GNU"
@@ -15,9 +15,9 @@ fastapi = "^0.111.0"
 structlog = "^24.2.0"
 python-dotenv = "^1.0.1"
 toml = "^0.10.2"
-sentry-sdk = {version = "^2.7.1", extras = ["fastapi"]}
 python-jose = {version = "^3.3.0", extras = ["cryptography"]}
 requests = "^2.32.3"
+sentry-sdk = {version = "^2.11.0", extras = ["fastapi"]}
 
 
 [tool.poetry.group.test.dependencies]
