@@ -9,7 +9,7 @@ from sentry_sdk.integrations.starlette import StarletteIntegration
 from logger import log
 import config
 from routers import health, jwt
-from utils import app_util
+from utils.app_util import AppUtil
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 oauth2_scheme.auto_error = False
@@ -56,4 +56,4 @@ server = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
 server.include_router(health.router, include_in_schema=False)
 server.include_router(jwt.router, prefix="/api", tags=["jwt"])
 
-server = app_util.set_openapi_info(app=server)
+server = AppUtil.set_openapi_info(app=server)
