@@ -5,7 +5,6 @@ toml==0.10.2
 sentry-sdk[fastapi]==2.11.0
 python-jose[cryptography]==3.3.0
 requests==2.32.3
-jose==1.0.0
 
 pydantic_core~=2.20.0
 starlette~=0.37.2

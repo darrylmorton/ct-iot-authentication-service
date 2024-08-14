@@ -18,7 +18,6 @@ toml = "^0.10.2"
 python-jose = {version = "^3.3.0", extras = ["cryptography"]}
 requests = "^2.32.3"
 sentry-sdk = {version = "^2.11.0", extras = ["fastapi"]}
-jose = "^1.0.0"
 
 
 [tool.poetry.group.test.dependencies]
