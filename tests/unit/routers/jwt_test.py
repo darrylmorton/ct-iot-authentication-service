@@ -2,14 +2,14 @@ from jose import jwt
 
 from authentication_service.service import server
 from config import JWT_SECRET
-from tests.helper.jwt_helper import create_token_expiry
-from tests.helper.routes_helper import mock_http_post_client
+from tests.helper.jwt_helper import JwtHelper
+from tests.helper.routes_helper import RoutesHelper
 
 
 class TestJwt:
     id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     token = jwt.encode(
-        {"id": id, "exp": create_token_expiry()},
+        {"id": id, "exp": JwtHelper.create_token_expiry()},
         JWT_SECRET,
         algorithm="HS256",
     )
@@ -17,8 +17,8 @@ class TestJwt:
     async def test_post_jwt_missing_username(self):
         payload = {}
 
-        response = await mock_http_post_client(
-            server, "http://test", "api/jwt", payload
+        response = await RoutesHelper.http_post_client(
+            server, RoutesHelper.TEST_URL, "/api/jwt", payload
         )
 
         assert response.status_code == 401
@@ -26,8 +26,8 @@ class TestJwt:
     async def test_post_jwt_invalid_id(self):
         payload = {"id": "1b7f4d5a-161d-4b3a-8b33"}
 
-        response = await mock_http_post_client(
-            server, "http://test", "api/jwt", payload
+        response = await RoutesHelper.http_post_client(
+            server, RoutesHelper.TEST_URL, "/api/jwt", payload
         )
 
         assert response.status_code == 401
@@ -35,8 +35,8 @@ class TestJwt:
     async def test_post_jwt_success(self):
         payload = {"id": self.id}
 
-        response = await mock_http_post_client(
-            server, "http://test", "api/jwt", payload
+        response = await RoutesHelper.http_post_client(
+            server, RoutesHelper.TEST_URL, "/api/jwt", payload
         )
         response_json = response.json()
 

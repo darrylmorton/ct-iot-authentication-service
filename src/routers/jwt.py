@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse
 
 import config
 from schemas import JwtVerify
-from utils import auth_util
+from utils.auth_util import AuthUtil
 
 from logger import log
 
@@ -27,7 +27,7 @@ async def jwt_create(req: Request) -> JSONResponse:
             "token": jwt.encode(
                 {
                     "id": payload["id"],
-                    "exp": auth_util.create_token_expiry(),
+                    "exp": AuthUtil.create_token_expiry(),
                 },
                 config.JWT_SECRET,
                 algorithm="HS256",

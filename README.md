@@ -23,6 +23,7 @@ SENTRY_PROFILES_SAMPLE_RATE=
 SENTRY_SAMPLE_RATE=
 
 SERVICE_NAME=
+APP_PORT=
 LOG_LEVEL=
 ENVIRONMENT=
 
@@ -48,7 +49,7 @@ make server-start
 
 ### Test
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Run Tests
