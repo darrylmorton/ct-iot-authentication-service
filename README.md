@@ -47,11 +47,6 @@ make dev-server-start
 make server-start
 ```
 
-### Test
-```
-docker compose up -d
-```
-
 ### Run Tests
 ```
 make test
