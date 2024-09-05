@@ -15,8 +15,8 @@ class TestJwt:
         algorithm="HS256",
     )
 
-    async def test_post_jwt_missing_username(self):
-        payload = {}
+    async def test_post_jwt_missing_id(self):
+        payload = {"admin": self.admin}
 
         response = await RoutesHelper.http_post_client(app, "/api/jwt", payload)
 
@@ -24,6 +24,20 @@ class TestJwt:
 
     async def test_post_jwt_invalid_id(self):
         payload = {"id": "1b7f4d5a-161d-4b3a-8b33", "admin": self.admin}
+
+        response = await RoutesHelper.http_post_client(app, "/api/jwt", payload)
+
+        assert response.status_code == 401
+
+    async def test_post_jwt_missing_admin(self):
+        payload = {"id": self.id}
+
+        response = await RoutesHelper.http_post_client(app, "/api/jwt", payload)
+
+        assert response.status_code == 401
+
+    async def test_post_jwt_invalid_admin(self):
+        payload = {"id": self.id, "admin": "abc"}
 
         response = await RoutesHelper.http_post_client(app, "/api/jwt", payload)
 

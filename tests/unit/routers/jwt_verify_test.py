@@ -10,7 +10,7 @@ class TestJwtVerify:
     id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     admin = False
     token = jwt.encode(
-        {"id": id, "exp": JwtHelper.create_token_expiry()},
+        {"id": id, "admin": admin, "exp": JwtHelper.create_token_expiry()},
         JWT_SECRET,
         algorithm="HS256",
     )

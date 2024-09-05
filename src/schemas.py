@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class JwtVerifyBase(BaseModel):
     id: UUID
+    admin: bool
 
 
 class JwtVerify(JwtVerifyBase):
