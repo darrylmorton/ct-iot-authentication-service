@@ -6,16 +6,20 @@ lint: fmt
 	poetry run ruff check . --fix
 .PHONY: lint
 
+local-build: lint
+	DOCKER_BUILDKIT=1 docker build --target=runtime --progress=plain .
+.PHONY: local-build
+
 build: lint
 	DOCKER_BUILDKIT=1 docker build --platform=linux/amd64 --target=runtime --progress=plain .
 .PHONY: build
 
 dev-server-start: fmt
-	poetry run uvicorn --log-level=debug authentication_service.service:server --reload --port 8001
+	poetry run uvicorn --log-level=debug authentication_service.service:app --reload --port 8000
 .PHONY: dev-server-start
 
 server-start: fmt
-	poetry run uvicorn authentication_service.service:server
+	poetry run uvicorn authentication_service.service:app
 .PHONY: server-start
 
 test-unit: fmt
