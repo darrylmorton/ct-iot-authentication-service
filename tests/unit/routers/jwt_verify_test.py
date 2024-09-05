@@ -58,7 +58,17 @@ class TestJwtVerify:
 
     async def test_invalid_token_missing_id(self):
         invalid_token = jwt.encode(
-            {"exp": JwtHelper.create_token_expiry()},
+            {"admin": self.admin, "exp": JwtHelper.create_token_expiry()},
+            JWT_SECRET,
+            algorithm="HS256",
+        )
+        response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
+
+        assert response.status_code == 401
+
+    async def test_invalid_token_missing_admin(self):
+        invalid_token = jwt.encode(
+            {"id": self.id, "exp": JwtHelper.create_token_expiry()},
             JWT_SECRET,
             algorithm="HS256",
         )
