@@ -27,6 +27,7 @@ async def jwt_create(req: Request) -> JSONResponse:
             "token": jwt.encode(
                 {
                     "id": payload["id"],
+                    "admin": payload["admin"],
                     "exp": AuthUtil.create_token_expiry(),
                 },
                 config.JWT_SECRET,
