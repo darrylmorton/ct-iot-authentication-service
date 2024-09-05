@@ -1,6 +1,6 @@
 ```mermaid
 ---
-title: Authentication Service Flow Chart
+title: Create Authentication Token Flow Chart
 ---
 
 flowchart LR
@@ -15,7 +15,7 @@ flowchart LR
 
 ```mermaid
 ---
-title: Authentication Service Flow Chart
+title: Verify Authentication Token Flow Chart
 ---
 
 flowchart LR
