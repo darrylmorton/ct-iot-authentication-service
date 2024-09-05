@@ -21,6 +21,7 @@ class TestJwtVerify:
 
         assert response.status_code == 200
         assert actual_result["id"] == self.id
+        assert actual_result["admin"] == self.admin
 
     async def test_missing_token(self):
         response = await RoutesHelper.http_client(app, "/api/jwt", {})

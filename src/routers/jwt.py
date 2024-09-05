@@ -74,7 +74,7 @@ async def jwt_verify(req: Request) -> JSONResponse:
 
         return JSONResponse(
             status_code=HTTPStatus.OK,
-            content={"id": payload["id"]},
+            content={"id": payload["id"], "admin": payload["admin"]},
         )
     except KeyError as error:
         log.debug(f"verify_jwt - invalid key {error}")

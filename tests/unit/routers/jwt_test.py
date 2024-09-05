@@ -58,7 +58,7 @@ class TestJwt:
         assert actual_result["admin"] == self.admin
 
     async def test_post_jwt_success_with_admin(self):
-        payload = {"id": self.id, "admin": True}
+        payload = {"id": self.id, "admin": self.admin}
 
         response = await RoutesHelper.http_post_client(app, "/api/jwt", payload)
         response_json = response.json()
@@ -69,4 +69,4 @@ class TestJwt:
 
         assert response.status_code == 201
         assert actual_result["id"] == self.id
-        assert actual_result["admin"] == True
+        assert actual_result["admin"] == self.admin
