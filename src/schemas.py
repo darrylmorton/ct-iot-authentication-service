@@ -1,11 +1,9 @@
-from uuid import UUID
-
 from pydantic import BaseModel
 
 
 class JwtVerifyBase(BaseModel):
-    id: UUID
-    admin: bool
+    id: str
+    is_admin: bool
 
 
 class JwtVerify(JwtVerifyBase):

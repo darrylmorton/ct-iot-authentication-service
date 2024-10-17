@@ -1,6 +1,7 @@
 from http import HTTPStatus
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from jose import jwt, ExpiredSignatureError, JWTError
 from pydantic_core import ValidationError
 
@@ -8,6 +9,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 import config
+import schemas
 from schemas import JwtVerify
 from utils.auth_util import AuthUtil
 
@@ -17,17 +19,17 @@ router = APIRouter()
 
 
 @router.post("/jwt", status_code=HTTPStatus.CREATED)
-async def jwt_create(req: Request) -> JSONResponse:
+async def jwt_create(
+    payload: Annotated[schemas.JwtVerify, Body(embed=False)],
+) -> JSONResponse:
     try:
-        payload = await req.json()
-
         JwtVerify.model_validate(payload)
 
         token = {
             "token": jwt.encode(
                 {
-                    "id": payload["id"],
-                    "admin": payload["admin"],
+                    "id": payload.id,
+                    "admin": payload.is_admin,
                     "exp": AuthUtil.create_token_expiry(),
                 },
                 config.JWT_SECRET,

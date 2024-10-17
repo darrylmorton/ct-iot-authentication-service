@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env.test")
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
+SENTRY_ENVIRONMENTS = os.environ.get("SENTRY_ENVIRONMENTS") or ["production"]
 LOG_LEVEL = os.environ.get("LOG_LEVEL")
 SERVICE_NAME = os.environ.get("SERVICE_NAME")
 APP_PORT = os.environ.get("UVICORN_PORT") or 8000
