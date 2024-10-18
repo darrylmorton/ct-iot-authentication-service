@@ -21,7 +21,7 @@ async def jwt_create(req: Request) -> JSONResponse:
     try:
         payload = await req.json()
 
-        schemas.JwtVerify.model_validate(payload)
+        schemas.JwtCreate.model_validate(payload)
 
         token = {
             "token": jwt.encode(
@@ -75,7 +75,7 @@ async def jwt_verify(req: Request) -> JSONResponse:
 
         return JSONResponse(
             status_code=HTTPStatus.OK,
-            content={"id": payload["id"], "is_admin": payload["admin"]},
+            content={"id": payload["id"], "is_admin": payload["is_admin"]},
         )
     except KeyError as error:
         log.debug(f"jwt_verify - invalid key {error}")
