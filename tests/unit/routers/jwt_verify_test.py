@@ -21,7 +21,7 @@ class TestJwtVerify:
 
         assert response.status_code == 200
         assert actual_result["id"] == self.id
-        assert actual_result["admin"] == self.admin
+        assert actual_result["is_admin"] == self.admin
 
     async def test_missing_token(self):
         response = await RoutesHelper.http_client(app, "/api/jwt", {})
@@ -32,7 +32,7 @@ class TestJwtVerify:
         expired_token = jwt.encode(
             {
                 "id": self.id,
-                "admin": self.admin,
+                "is_admin": self.admin,
                 "exp": JwtHelper.create_token_expiry(-1),
             },
             JWT_SECRET,
@@ -47,7 +47,7 @@ class TestJwtVerify:
         invalid_token = jwt.encode(
             {
                 "id": "1b7f4d5a-161d-4b3a-8b33",
-                "admin": self.admin,
+                "is_admin": self.admin,
                 "exp": JwtHelper.create_token_expiry(),
             },
             JWT_SECRET,
@@ -59,7 +59,7 @@ class TestJwtVerify:
 
     async def test_invalid_token_missing_id(self):
         invalid_token = jwt.encode(
-            {"admin": self.admin, "exp": JwtHelper.create_token_expiry()},
+            {"is_admin": self.admin, "exp": JwtHelper.create_token_expiry()},
             JWT_SECRET,
             algorithm="HS256",
         )
@@ -81,7 +81,7 @@ class TestJwtVerify:
         invalid_token = jwt.encode(
             {
                 "id": self.id,
-                "admin": self.admin,
+                "is_admin": self.admin,
                 "exp": JwtHelper.create_token_expiry(),
             },
             "",
