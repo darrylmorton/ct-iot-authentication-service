@@ -34,21 +34,17 @@ JWT_TOKEN_EXPIRY_SECONDS=
 
 ## Build
 ```
-make build
+make local-build
 ```
 
 ## Run
+
 ### Development
 ```
 make dev-server-start
 ```
 
-### Production
-```
-make server-start
-```
-
-### Run Tests
+### Tests
 ```
 make test
 ```
