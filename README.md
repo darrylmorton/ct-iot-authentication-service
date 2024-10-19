@@ -38,7 +38,7 @@ make local-build
 ```
 
 ## Run
-Required for running `ct-iot-user-service` locally via [docker-compose-local.yml](https://github.com/darrylmorton/ct-iot-user-service/blob/8e8fe6e0ce43d04b7a4f610e824c748f60e16df2/docker-compose-local.yml)
+Required for running `ct-iot-user-service` locally via [docker-compose-local.yml](https://github.com/darrylmorton/ct-iot-user-service/blob/main/docker-compose-local.yml)
 ```
 make local-build
 ```
