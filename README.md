@@ -34,21 +34,21 @@ JWT_TOKEN_EXPIRY_SECONDS=
 
 ## Build
 ```
-make build
+make local-build
 ```
 
 ## Run
+Required for running `ct-iot-user-service` locally via [docker-compose-local.yml](https://github.com/darrylmorton/ct-iot-user-service/blob/main/docker-compose-local.yml)
+```
+make local-build
+```
+
 ### Development
 ```
 make dev-server-start
 ```
 
-### Production
-```
-make server-start
-```
-
-### Run Tests
+### Tests
 ```
 make test
 ```
