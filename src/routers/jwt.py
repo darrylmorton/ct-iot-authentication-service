@@ -34,7 +34,6 @@ async def jwt_create(req: Request) -> JSONResponse:
                 algorithm="HS256",
             )
         }
-        log.info(f"jwt create 3 {token=}")
 
         return JSONResponse(status_code=HTTPStatus.CREATED, content=token)
     except ValidationError as error:
@@ -75,7 +74,7 @@ async def jwt_verify(req: Request) -> JSONResponse:
 
         return JSONResponse(
             status_code=HTTPStatus.OK,
-            content={"id": payload["id"], "is_admin": payload["is_admin"]},
+            content={"id": payload["id"], "admin": payload["is_admin"]},
         )
     except KeyError as error:
         log.debug(f"jwt_verify - invalid key {error}")
