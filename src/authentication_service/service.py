@@ -18,8 +18,10 @@ oauth2_scheme.auto_error = False
 @contextlib.asynccontextmanager
 async def lifespan_wrapper(app: FastAPI):
     log.info(f"Starting {config.SERVICE_NAME}...{app.host}")
+    log.info(f"Sentry {config.SENTRY_ENVIRONMENT} environment")
+    log.info(f"Application {config.ENVIRONMENT} environment")
 
-    if config.ENVIRONMENT == "production":
+    if config.SENTRY_ENVIRONMENT != "local":
         sentry_sdk.init(
             dsn=config.SENTRY_DSN,
             # Set traces_sample_rate to 1.0 to capture 100%
