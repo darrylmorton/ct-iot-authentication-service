@@ -8,7 +8,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.security import OAuth2PasswordBearer
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
-from starlette import status
 from starlette.responses import JSONResponse
 
 from logger import log
@@ -65,8 +64,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     log.info(f"**** validation_exception_handler called..")
 
     return JSONResponse(
-        # status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        status_code=status.HTTP_401_UNAUTHORIZED,
+        status_code=HTTPStatus.UNAUTHORIZED,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
     )
 

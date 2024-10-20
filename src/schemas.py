@@ -71,38 +71,37 @@ class JwtPayload(JwtPayloadBase):
 
 
 class JwtVerifyBase(BaseModel):
-    authorization: str
+    auth_token: str = Field(alias="auth-token", validation_alias="auth_token")
 
 
 class JwtVerify(JwtVerifyBase):
-    @field_validator("authorization")  # , mode="before", check_fields=True)
+    @field_validator("auth_token")  # , mode="before", check_fields=True)
     @classmethod
-    def validate_authorization_header(cls, v: str, info: ValidationInfo):
-        log.info(f"validate_authorization: {v=}")
-        log.info(f"validate_authorization: {info=}")
+    def validate_auth_token_header(cls, v: str, info: ValidationInfo):
+        log.info(f"validate_auth_token_header: {v=}")
+        log.info(f"validate_auth_token_header: {info=}")
 
-        if info.field_name == "authorization" and not isinstance(v, str):
-            log.info(f"validate_authorization FAIL")
+        if info.field_name == "auth_token" and not isinstance(v, str):
+            log.info(f"validate_auth_token_header FAIL")
 
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid request header"
             )
 
         try:
-            # payload = jwt.decode(v, config.JWT_SECRET, algorithms=["HS256"])
             payload = AuthUtil.decode_token(v)
-            log.info(f"**** **** validate_authorization {payload=}")
+            log.info(f"**** **** validate_auth_token_header {payload=}")
 
             JwtPayload.model_validate(payload)
 
-            log.info(f"**** validate_authorization {payload=}")
+            log.info(f"**** validate_auth_token_header {payload=}")
 
         except KeyError:
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT payload"
             )
 
-        log.info(f"validate_authorization SUCCESS")
+        log.info(f"validate_auth_token_header SUCCESS")
 
         return v
 
