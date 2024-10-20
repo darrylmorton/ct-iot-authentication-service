@@ -1,3 +1,5 @@
+from unittest import skip
+
 from utils.app_util import AppUtil
 
 
@@ -6,3 +8,11 @@ class TestAppUtil:
         actual_result = AppUtil.get_app_version()
 
         assert actual_result == "3.0.0"
+
+    @skip
+    async def test_set_openapi_info(self):
+        pass
+
+    @skip
+    async def test_validate_uuid4(self):
+        pass

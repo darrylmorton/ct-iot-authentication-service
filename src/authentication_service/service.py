@@ -60,9 +60,7 @@ app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    log.info(f"**** validation_exception_handler called..")
-
+async def validation_exception_handler(_: Request, exc: RequestValidationError):
     return JSONResponse(
         status_code=HTTPStatus.UNAUTHORIZED,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),

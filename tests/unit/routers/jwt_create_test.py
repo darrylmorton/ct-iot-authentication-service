@@ -4,7 +4,6 @@ from authentication_service.service import app
 from config import JWT_SECRET
 from tests.helper.jwt_helper import JwtHelper
 from tests.helper.routes_helper import RoutesHelper
-from logger import log
 
 
 class TestJwtCreate:
@@ -49,7 +48,6 @@ class TestJwtCreate:
 
         response = await RoutesHelper.http_post_client(app, "/api/jwt", payload)
         response_json = response.json()
-        log.info(f"{response_json=}")
 
         actual_result = jwt.decode(
             response_json["token"], JWT_SECRET, algorithms=["HS256"]

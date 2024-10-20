@@ -1,11 +1,9 @@
 from http import HTTPStatus
-from typing import Optional
 
 from fastapi import APIRouter, Header
 from starlette.responses import JSONResponse
 
 import schemas
-from logger import log
 from utils.auth_util import AuthUtil
 
 router = APIRouter()
@@ -24,8 +22,6 @@ async def jwt_verify(
         alias="auth-token", validation_alias="auth_token", convert_underscores=True
     ),
 ) -> JSONResponse:
-    log.info(f"jwt_verify called...: {headers=}")
-
     payload = AuthUtil.decode_token(auth_token=headers.auth_token)
 
     return JSONResponse(

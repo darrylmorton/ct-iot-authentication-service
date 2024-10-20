@@ -2,7 +2,6 @@ from jose import jwt
 
 from authentication_service.service import app
 from config import JWT_SECRET
-from logger import log
 from tests.helper.jwt_helper import JwtHelper
 from tests.helper.routes_helper import RoutesHelper
 
@@ -19,7 +18,6 @@ class TestJwtVerify:
     async def test_valid_token(self):
         response = await RoutesHelper.http_client(app, "/api/jwt", self.token)
         actual_result = response.json()
-        log.info(f"**** actual_result {actual_result=}")
 
         assert response.status_code == 200
         assert actual_result["id"] == self.id
@@ -57,7 +55,6 @@ class TestJwtVerify:
         )
         response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
         actual_result = response.json()
-        log.info(f"**** actual_result {actual_result=}")
 
         assert response.status_code == 401
 
