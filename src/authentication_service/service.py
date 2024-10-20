@@ -1,10 +1,15 @@
 import contextlib
+from http import HTTPStatus
 
 import sentry_sdk
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.security import OAuth2PasswordBearer
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
+from starlette import status
+from starlette.responses import JSONResponse
 
 from logger import log
 import config
@@ -53,6 +58,17 @@ async def lifespan_wrapper(app: FastAPI):
 
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    log.info(f"**** validation_exception_handler called..")
+
+    return JSONResponse(
+        # status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+    )
 
 
 app.include_router(health.router, include_in_schema=False)
