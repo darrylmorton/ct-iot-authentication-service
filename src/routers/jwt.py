@@ -10,6 +10,7 @@ from starlette.responses import JSONResponse
 import config
 import schemas
 from schemas import JwtVerify
+from utils.app_util import AppUtil
 from utils.auth_util import AuthUtil
 
 from logger import log
@@ -58,53 +59,46 @@ async def jwt_create(payload: schemas.JwtCreate) -> JSONResponse:
 
 
 @router.get("/jwt", status_code=HTTPStatus.OK)
-# async def jwt_verify(authorization: str | None = Header(default=None)) -> JSONResponse:
-async def jwt_verify(headers: schemas.JwtVerify) -> JSONResponse:
-    log.info(f"**** jwt_verify {headers=}")
+async def jwt_verify(headers: schemas.JwtVerify = Header()) -> JSONResponse:
+    # try:
+    if not headers.authorization:
+        raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED)
 
-    try:
-        # auth_token = req.headers["Authorization"]
+    payload = AuthUtil.decode_token(headers.authorization)
+    # payload = jwt.decode(
+    #     headers.authorization, config.JWT_SECRET, algorithms=["HS256"]
+    # )
 
-        if not headers:
-            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED)
+    return JSONResponse(
+        status_code=HTTPStatus.OK,
+        content={
+            "id": payload["id"],
+            "admin": payload["is_admin"],
+            # "expiry": payload["exp"],
+        },
+    )
 
-        payload = jwt.decode(
-            headers, config.JWT_SECRET, algorithms=["HS256"]
-        )
-
-        # schemas.JwtVerify.model_validate(payload)
-
-        return JSONResponse(
-            status_code=HTTPStatus.OK,
-            content={"id": payload["id"], "admin": payload["is_admin"]},
-        )
-    except KeyError as error:
-        log.debug(f"jwt_verify - invalid key {error}")
-
-        return JSONResponse(
-            status_code=HTTPStatus.UNAUTHORIZED, content="Invalid key error"
-        )
-    except TypeError as error:
-        log.debug(f"jwt_verify - type error {error}")
-
-        return JSONResponse(
-            status_code=HTTPStatus.UNAUTHORIZED, content="Unauthorised error"
-        )
-    except ExpiredSignatureError as error:
-        log.debug(f"jwt_verify - expired signature {error}")
-
-        return JSONResponse(
-            status_code=HTTPStatus.UNAUTHORIZED, content="Expired token error"
-        )
-    except JWTError as error:
-        log.debug(f"jwt_verify - invalid token {error}")
-
-        return JSONResponse(
-            status_code=HTTPStatus.UNAUTHORIZED, content="Invalid token error"
-        )
-    except ValidationError as error:
-        log.debug(f"jwt_verify - invalid token {error}")
-
-        return JSONResponse(
-            status_code=HTTPStatus.UNAUTHORIZED, content="Invalid token error"
-        )
+    # except KeyError as error:
+    #     log.debug(f"jwt_verify - invalid key {error}")
+    #
+    #     return JSONResponse(
+    #         status_code=HTTPStatus.UNAUTHORIZED, content="Invalid key error"
+    #     )
+    # except TypeError as error:
+    #     log.debug(f"jwt_verify - type error {error}")
+    #
+    #     return JSONResponse(
+    #         status_code=HTTPStatus.UNAUTHORIZED, content="Unauthorised error"
+    #     )
+    # except ExpiredSignatureError as error:
+    #     log.debug(f"jwt_verify - expired signature {error}")
+    #
+    #     return JSONResponse(
+    #         status_code=HTTPStatus.UNAUTHORIZED, content="Expired token error"
+    #     )
+    # except JWTError as error:
+    #     log.debug(f"jwt_verify - invalid token {error}")
+    #
+    #     return JSONResponse(
+    #         status_code=HTTPStatus.UNAUTHORIZED, content="Invalid token error"
+    #     )
