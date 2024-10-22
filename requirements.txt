@@ -1,4 +1,4 @@
-fastapi==0.111.0
+fastapi[standard]==0.115.2
 structlog==24.2.0
 python-dotenv==1.0.1
 toml==0.10.2
