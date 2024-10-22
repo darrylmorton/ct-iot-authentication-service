@@ -54,7 +54,6 @@ async def lifespan_wrapper(app: FastAPI):
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
 
-
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_: Request, exc: RequestValidationError):
     return JSONResponse(
@@ -64,6 +63,7 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
 
 
 app.include_router(health.router, include_in_schema=False)
+
 app.include_router(jwt.router, prefix="/api", tags=["jwt"])
 
 app = AppUtil.set_openapi_info(app=app)
