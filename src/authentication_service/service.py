@@ -54,6 +54,7 @@ async def lifespan_wrapper(app: FastAPI):
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
 
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_: Request, exc: RequestValidationError):
     return JSONResponse(
