@@ -54,7 +54,6 @@ class TestJwtVerify:
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
-        actual_result = response.json()
 
         assert response.status_code == 401
 
