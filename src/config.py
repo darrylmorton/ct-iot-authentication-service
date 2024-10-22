@@ -1,12 +1,11 @@
-import logging
 import os
 
 from dotenv import load_dotenv
 
 from utils.app_util import AppUtil
 
-
 load_dotenv()
+
 
 APP_VERSION = AppUtil.get_app_version()
 
@@ -25,10 +24,3 @@ JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_TOKEN_EXPIRY_SECONDS = int(os.environ.get("JWT_TOKEN_EXPIRY_SECONDS"))
 
 JWT_EXCLUDED_ENDPOINTS = ["/healthz", "/api/jwt"]
-
-
-def get_logger() -> logging.Logger:
-    logger = logging.getLogger("uvicorn")
-    logger.setLevel(logging.getLevelName(LOG_LEVEL))
-
-    return logger
