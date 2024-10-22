@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from typing import Optional
 
 from fastapi import HTTPException
 from pydantic import BaseModel, field_validator, Field
@@ -12,12 +11,6 @@ from utils.auth_util import AuthUtil
 class JwtBase(BaseModel):
     id: str
 
-
-class JwtCreateBase(JwtBase):
-    admin: bool
-
-
-class JwtCreate(JwtCreateBase):
     @field_validator("id")
     @classmethod
     def validate_id(cls, v: str, info: ValidationInfo):
@@ -25,6 +18,10 @@ class JwtCreate(JwtCreateBase):
             raise HTTPException(status_code=401, detail="Invalid JWT id")
 
         return v
+
+
+class JwtCreateBase(JwtBase):
+    admin: bool
 
     @field_validator("admin")
     @classmethod
@@ -34,24 +31,23 @@ class JwtCreate(JwtCreateBase):
 
         return v
 
+
+class JwtCreate(JwtCreateBase):
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {"id": "848a3cdd-cafd-4ec6-a921-afb0bcc841dd", "admin": False},
+                {"id": "eaf0bb67-288b-4e56-860d-e727b4f57ff9", "admin": True},
+            ]
+        }
+    }
+
     class ConfigDict:
         from_attributes = True
 
 
 class JwtPayloadBase(JwtBase):
     is_admin: bool
-    expiry: Optional[int] = None
-    exp: Optional[int] = None
-
-
-class JwtPayload(JwtPayloadBase):
-    @field_validator("id")
-    @classmethod
-    def validate_id(cls, v: str, info: ValidationInfo):
-        if info.field_name == "id" and not AppUtil.validate_uuid4(v):
-            raise HTTPException(status_code=401, detail="Invalid JWT id")
-
-        return v
 
     @field_validator("is_admin")
     @classmethod
@@ -61,6 +57,8 @@ class JwtPayload(JwtPayloadBase):
 
         return v
 
+
+class JwtPayload(JwtPayloadBase):
     class ConfigDict:
         from_attributes = True
 
@@ -68,8 +66,6 @@ class JwtPayload(JwtPayloadBase):
 class JwtVerifyBase(BaseModel):
     auth_token: str = Field(alias="auth-token", validation_alias="auth_token")
 
-
-class JwtVerify(JwtVerifyBase):
     @field_validator("auth_token")
     @classmethod
     def validate_auth_token_header(cls, v: str, info: ValidationInfo):
@@ -89,5 +85,7 @@ class JwtVerify(JwtVerifyBase):
 
         return v
 
+
+class JwtVerify(JwtVerifyBase):
     class ConfigDict:
         from_attributes = True

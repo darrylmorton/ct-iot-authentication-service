@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Body
 from starlette.responses import JSONResponse
 
 import schemas
@@ -10,7 +10,9 @@ router = APIRouter()
 
 
 @router.post("/jwt", status_code=HTTPStatus.CREATED)
-async def jwt_create(payload: schemas.JwtCreate) -> JSONResponse:
+async def jwt_create(
+    payload: schemas.JwtCreate = Body(embed=False),
+) -> JSONResponse:
     token = AuthUtil.encode_token(_id=payload.id, _admin=payload.admin)
 
     return JSONResponse(status_code=HTTPStatus.CREATED, content=token)
