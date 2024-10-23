@@ -5,7 +5,6 @@ import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from fastapi.security import OAuth2PasswordBearer
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.responses import JSONResponse
@@ -14,9 +13,6 @@ from logger import log
 import config
 from routers import health, jwt
 from utils.app_util import AppUtil
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-oauth2_scheme.auto_error = False
 
 
 @contextlib.asynccontextmanager
@@ -68,6 +64,7 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
 
 
 app.include_router(health.router, include_in_schema=False)
+
 app.include_router(jwt.router, prefix="/api", tags=["jwt"])
 
 app = AppUtil.set_openapi_info(app=app)

@@ -15,7 +15,7 @@ build: lint
 .PHONY: build
 
 dev-server-start: fmt
-	poetry run uvicorn --log-level=debug authentication_service.service:app --reload --port 8000
+	poetry run uvicorn authentication_service.service:app --reload --port 8000
 .PHONY: dev-server-start
 
 server-start: fmt
