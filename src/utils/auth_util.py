@@ -10,9 +10,9 @@ from logger import log
 
 class AuthUtil:
     @staticmethod
-    def create_token_expiry() -> datetime:
+    def create_token_expiry(_seconds=config.JWT_EXPIRY_SECONDS) -> datetime:
         return datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
-            seconds=config.JWT_EXPIRY_SECONDS
+            seconds=_seconds
         )
 
     @staticmethod

@@ -2,15 +2,15 @@ from jose import jwt
 
 from authentication_service.service import app
 from config import JWT_SECRET
-from tests.helper.jwt_helper import JwtHelper
 from tests.helper.routes_helper import RoutesHelper
+from utils.auth_util import AuthUtil
 
 
 class TestJwtCreate:
     id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     admin = False
     token = jwt.encode(
-        {"id": id, "is_admin": admin, "exp": JwtHelper.create_token_expiry()},
+        {"id": id, "is_admin": admin, "exp": AuthUtil.create_token_expiry()},
         JWT_SECRET,
         algorithm="HS256",
     )
