@@ -19,7 +19,7 @@ def main():
         log.info(f"Running uvicorn with multiple workers {calculated_workers}")
 
         uvicorn.run(
-            app="authentication_service.service.server",
+            app="authentication_service.service.app",
             workers=calculated_workers,
             log_config=None,
         )

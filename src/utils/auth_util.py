@@ -30,7 +30,8 @@ class AuthUtil:
             log.debug(f"decode_token - expired signature {error}")
 
             raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Expired token error"
+                status_code=config.HTTP_STATUS_CODE_EXPIRED_TOKEN,
+                detail="Expired token error",
             )
         except JWTError as error:
             log.debug(f"decode_token - invalid token {error}")
