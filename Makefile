@@ -7,7 +7,7 @@ lint: fmt
 .PHONY: lint
 
 local-build: lint
-	DOCKER_BUILDKIT=1 docker build -t ct-iot-authentication-service --target=runtime --progress=plain .
+	DOCKER_BUILDKIT=1 docker build -t ct-iot-authentication-service:dev --target=runtime --progress=plain .
 .PHONY: local-build
 
 build: lint
