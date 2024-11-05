@@ -1,7 +1,7 @@
 from jose import jwt
 
+import config
 from authentication_service.service import app
-from config import JWT_SECRET
 from tests.helper.jwt_helper import JwtHelper
 from tests.helper.routes_helper import RoutesHelper
 
@@ -11,7 +11,7 @@ class TestJwtVerify:
     admin = False
     token = jwt.encode(
         {"id": id, "is_admin": admin, "exp": JwtHelper.create_token_expiry()},
-        JWT_SECRET,
+        config.JWT_SECRET,
         algorithm="HS256",
     )
 
@@ -35,13 +35,13 @@ class TestJwtVerify:
                 "is_admin": self.admin,
                 "exp": JwtHelper.create_token_expiry(-1),
             },
-            JWT_SECRET,
+            config.JWT_SECRET,
             algorithm="HS256",
         )
 
         response = await RoutesHelper.http_client(app, "/api/jwt", expired_token)
 
-        assert response.status_code == 401
+        assert response.status_code == config.HTTP_STATUS_CODE_EXPIRED_TOKEN
 
     async def test_invalid_token_id(self):
         invalid_token = jwt.encode(
@@ -50,7 +50,7 @@ class TestJwtVerify:
                 "is_admin": self.admin,
                 "exp": JwtHelper.create_token_expiry(),
             },
-            JWT_SECRET,
+            config.JWT_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
@@ -60,7 +60,7 @@ class TestJwtVerify:
     async def test_invalid_token_missing_id(self):
         invalid_token = jwt.encode(
             {"is_admin": self.admin, "exp": JwtHelper.create_token_expiry()},
-            JWT_SECRET,
+            config.JWT_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
@@ -70,7 +70,7 @@ class TestJwtVerify:
     async def test_invalid_token_missing_is_admin(self):
         invalid_token = jwt.encode(
             {"id": self.id, "exp": JwtHelper.create_token_expiry()},
-            JWT_SECRET,
+            config.JWT_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)

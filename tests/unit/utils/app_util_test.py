@@ -7,7 +7,7 @@ class TestAppUtil:
     async def test_get_app_version(self):
         actual_result = AppUtil.get_app_version()
 
-        assert actual_result == "1.0.1"
+        assert actual_result == "1.0.2"
 
     @skip
     async def test_set_openapi_info(self):
