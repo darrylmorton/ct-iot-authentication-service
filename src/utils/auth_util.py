@@ -12,7 +12,7 @@ class AuthUtil:
     @staticmethod
     def create_token_expiry() -> datetime:
         return datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
-            seconds=config.JWT_TOKEN_EXPIRY_SECONDS
+            seconds=config.JWT_EXPIRY_SECONDS
         )
 
     @staticmethod
