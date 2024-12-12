@@ -9,13 +9,13 @@ from utils.auth_util import AuthUtil
 router = APIRouter()
 
 
-@router.post("/jwt", status_code=HTTPStatus.CREATED)
+@router.post("/jwt", status_code=HTTPStatus.OK)
 async def jwt_create(
     payload: schemas.JwtCreate = Body(embed=False),
 ) -> JSONResponse:
     token = AuthUtil.encode_token(_id=payload.id, _admin=payload.admin)
 
-    return JSONResponse(status_code=HTTPStatus.CREATED, content=token)
+    return JSONResponse(status_code=HTTPStatus.OK, content=token)
 
 
 @router.get("/jwt", status_code=HTTPStatus.OK)
