@@ -8,6 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.responses import JSONResponse
+from prometheus_client import make_asgi_app
 
 from logger import log
 import config
@@ -53,6 +54,10 @@ async def lifespan_wrapper(app: FastAPI):
 
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
+
+# prometheus integration
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
 
 
 @app.exception_handler(RequestValidationError)

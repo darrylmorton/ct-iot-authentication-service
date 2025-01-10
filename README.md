@@ -34,6 +34,9 @@ JWT_EXPIRY_SECONDS=
 
 ## Build
 ```
+# for minikube (local development)
+eval $(minikube docker-env)
+
 make local-build
 ```
 

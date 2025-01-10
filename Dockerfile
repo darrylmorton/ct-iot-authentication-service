@@ -35,4 +35,4 @@ RUN ls -la
 
 CMD ["uvicorn", "authentication_service.service:app", "--host", "0.0.0.0"]
 
-EXPOSE 8000
+EXPOSE 8001
