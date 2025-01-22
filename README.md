@@ -55,3 +55,18 @@ make dev-server-start
 ```
 make test
 ```
+
+### Helm | K8s 
+```
+# development
+helm install authentication-service helm/authentication-service -f helm/authentication-service/local-values.yaml -n ct-iot
+helm upgrade authentication-service helm/authentication-service -f helm/authentication-service/local-values.yaml -n ct-iot
+
+k -n ct-iot port-forward svc/authentication-service 8001:9001 &
+
+# production
+helm install authentication-service helm/authentication-service -f helm/authentication-service/values.yaml -n ct-iot
+helm upgrade authentication-service helm/authentication-service -f helm/authentication-service/values.yaml -n ct-iot
+
+helm uninstall authentication-service -n ct-iot
+```

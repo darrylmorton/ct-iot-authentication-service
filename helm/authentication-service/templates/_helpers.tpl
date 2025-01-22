@@ -34,6 +34,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "authentication-service.labels" -}}
+app: {{ .Values.app.name }}
 helm.sh/chart: {{ include "authentication-service.chart" . }}
 {{ include "authentication-service.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -46,6 +47,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "authentication-service.selectorLabels" -}}
+app: {{ .Values.app.name }}
 app.kubernetes.io/name: {{ include "authentication-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

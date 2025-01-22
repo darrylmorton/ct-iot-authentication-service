@@ -46,7 +46,6 @@ async def lifespan_wrapper(app: FastAPI):
                 ),
             ],
         )
-
     log.info(f"{config.SERVICE_NAME} is ready")
 
     yield
@@ -54,10 +53,6 @@ async def lifespan_wrapper(app: FastAPI):
 
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
-
-# prometheus integration
-metrics_app = make_asgi_app()
-app.mount("/metrics", metrics_app)
 
 
 @app.exception_handler(RequestValidationError)
@@ -71,5 +66,9 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
 app.include_router(health.router, include_in_schema=False)
 
 app.include_router(jwt.router, prefix="/api", tags=["jwt"])
+
+# prometheus integration
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
 
 app = AppUtil.set_openapi_info(app=app)
