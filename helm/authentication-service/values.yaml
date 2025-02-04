@@ -26,7 +26,7 @@ image:
     - name: "ENVIRONMENT"
       value: "test"
     - name: "LOG_LEVEL"
-      value: "DEBUG"
+      value: "INFO"
     - name: "SERVICE_NAME"
       value: "authentication-service"
     - name: "UVICORN_PORT"

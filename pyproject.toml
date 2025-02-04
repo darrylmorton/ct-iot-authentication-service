@@ -19,7 +19,6 @@ python-jose = {version = "^3.3.0", extras = ["cryptography"]}
 requests = "^2.32.3"
 sentry-sdk = {version = "^2.11.0", extras = ["fastapi"]}
 prometheus-client = "^0.21.1"
-prometheus-fastapi-instrumentator = "^7.0.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.2.2"
