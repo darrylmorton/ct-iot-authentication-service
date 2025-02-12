@@ -21,12 +21,12 @@ class JwtBase(BaseModel):
 
 
 class JwtCreateBase(JwtBase):
-    admin: bool
+    is_admin: bool
 
-    @field_validator("admin")
+    @field_validator("is_admin")
     @classmethod
     def validate_admin(cls, v: bool, info: ValidationInfo):
-        if info.field_name == "admin" and not isinstance(v, bool):
+        if info.field_name == "is_admin" and not isinstance(v, bool):
             raise HTTPException(status_code=401, detail="Invalid JWT is_admin")
 
         return v
@@ -36,8 +36,8 @@ class JwtCreate(JwtCreateBase):
     model_config = {
         "json_schema_extra": {
             "examples": [
-                {"id": "848a3cdd-cafd-4ec6-a921-afb0bcc841dd", "admin": False},
-                {"id": "eaf0bb67-288b-4e56-860d-e727b4f57ff9", "admin": True},
+                {"id": "848a3cdd-cafd-4ec6-a921-afb0bcc841dd", "is_admin": False},
+                {"id": "eaf0bb67-288b-4e56-860d-e727b4f57ff9", "is_admin": True},
             ]
         }
     }

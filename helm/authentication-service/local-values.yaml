@@ -31,9 +31,9 @@ image:
       value: "authentication-service"
     - name: "UVICORN_PORT"
       value: "8001"
-    - name: "JWT_SECRET"
-      value: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    - name: "JWT_EXPIRY_SECONDS"
+    - name: JWT_SECRET
+      value: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    - name: JWT_EXPIRY_SECONDS
       value: "3600"
 
 # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/

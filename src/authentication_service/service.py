@@ -1,19 +1,23 @@
 import contextlib
 from http import HTTPStatus
 
+import psutil
 import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
+from prometheus_client import Gauge, make_asgi_app
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.responses import JSONResponse
-from prometheus_client import make_asgi_app
 
 from logger import log
 import config
 from routers import health, jwt
 from utils.app_util import AppUtil
+
+CPU_USAGE = Gauge("process_cpu_usage", "Current CPU usage in percent")
+MEMORY_USAGE = Gauge("process_memory_usage_bytes", "Current memory usage in bytes")
 
 
 @contextlib.asynccontextmanager
@@ -62,13 +66,22 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
     )
 
+@app.middleware("http")
+async def system_metrics(request: Request, call_next):
+    log.debug("middleware - system_metrics")
+
+    CPU_USAGE.set(psutil.cpu_percent())
+    MEMORY_USAGE.set(psutil.Process().memory_info().rss)
+
+    return await call_next(request)
+
+
+# prometheus metrics
+metrics_app = make_asgi_app()
+app.mount("/metrics/", metrics_app)
 
 app.include_router(health.router, include_in_schema=False)
 
 app.include_router(jwt.router, prefix="/api", tags=["jwt"])
-
-# prometheus integration
-metrics_app = make_asgi_app()
-app.mount("/metrics", metrics_app)
 
 app = AppUtil.set_openapi_info(app=app)
