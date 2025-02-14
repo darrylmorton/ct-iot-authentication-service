@@ -9,22 +9,26 @@ from utils.auth_util import AuthUtil
 
 
 class JwtBase(BaseModel):
+    id: str
+
     model_config = ConfigDict(from_attributes=True)
 
 
 class Jwt(JwtBase):
-    id: str
-
     @field_validator("id")
     @classmethod
     def validate_id(cls, v: str, info: ValidationInfo):
         if info.field_name == "id" and not AppUtil.validate_uuid4(v):
-            raise HTTPException(status_code=401, detail="Invalid JWT id")
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT id"
+            )
 
         return v
 
 
-class JwtCreate(Jwt):
+class JwtIsAdminBase(Jwt):
+    is_admin: bool
+
     model_config = ConfigDict(
         from_attributes=True,
         json_schema_extra={
@@ -35,36 +39,26 @@ class JwtCreate(Jwt):
         },
     )
 
-    is_admin: bool
 
-    @field_validator("is_admin")
-    @classmethod
-    def validate_admin(cls, v: bool, info: ValidationInfo):
-        if info.field_name == "is_admin" and not isinstance(v, bool):
-            raise HTTPException(status_code=401, detail="Invalid JWT is_admin")
-
-        return v
-
-
-class JwtPayload(Jwt):
-    is_admin: bool
-
+class JwtPayload(JwtIsAdminBase):
     @field_validator("is_admin")
     @classmethod
     def validate_is_admin(cls, v: bool, info: ValidationInfo):
         if info.field_name == "is_admin" and not isinstance(v, bool):
-            raise HTTPException(status_code=401, detail="Invalid JWT is_admin")
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT is_admin"
+            )
 
         return v
 
 
 class JwtVerifyBase(BaseModel):
+    auth_token: str = Field(alias="auth-token", validation_alias="auth_token")
+
     model_config = ConfigDict(from_attributes=True)
 
 
 class JwtVerify(JwtVerifyBase):
-    auth_token: str = Field(alias="auth-token", validation_alias="auth_token")
-
     @field_validator("auth_token")
     @classmethod
     def validate_auth_token_header(cls, v: str, info: ValidationInfo):

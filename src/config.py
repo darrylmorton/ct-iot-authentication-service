@@ -24,4 +24,4 @@ APP_PORT = os.environ.get("UVICORN_PORT") or 8001
 JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_EXPIRY_SECONDS = int(os.environ.get("JWT_EXPIRY_SECONDS"))
 
-JWT_EXCLUDED_ENDPOINTS = ["/healthz", "/api/jwt"]
+METRIC_ENDPOINTS = ["/healthz", "/api/jwt"]
