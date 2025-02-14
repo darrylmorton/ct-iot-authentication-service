@@ -6,18 +6,16 @@ import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from prometheus_client import Gauge, make_asgi_app
+from prometheus_client import make_asgi_app
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.responses import JSONResponse
 
+from decorators.metrics import CPU_USAGE, MEMORY_USAGE
 from logger import log
 import config
 from routers import health, jwt
 from utils.app_util import AppUtil
-
-CPU_USAGE = Gauge("process_cpu_usage", "Current CPU usage in percent")
-MEMORY_USAGE = Gauge("process_memory_usage_bytes", "Current memory usage in bytes")
 
 
 @contextlib.asynccontextmanager
@@ -65,6 +63,7 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
         status_code=HTTPStatus.UNAUTHORIZED,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
     )
+
 
 @app.middleware("http")
 async def system_metrics(request: Request, call_next):

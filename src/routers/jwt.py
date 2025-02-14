@@ -9,9 +9,11 @@ from utils.auth_util import AuthUtil
 
 router = APIRouter()
 
+ROUTER_PATH = "/jwt"
 
-@router.post("/jwt", status_code=HTTPStatus.OK)
-@observability
+
+@router.post(ROUTER_PATH, status_code=HTTPStatus.OK)
+@observability(path=ROUTER_PATH, method="POST", status_code=HTTPStatus.OK)
 async def jwt_create(
     payload: schemas.JwtCreate = Body(embed=False),
 ) -> JSONResponse:
@@ -20,8 +22,8 @@ async def jwt_create(
     return JSONResponse(status_code=HTTPStatus.OK, content=token)
 
 
-@router.get("/jwt", status_code=HTTPStatus.OK)
-@observability
+@router.get(ROUTER_PATH, status_code=HTTPStatus.OK)
+@observability(path=ROUTER_PATH, method="GET", status_code=HTTPStatus.OK)
 async def jwt_verify(
     headers: schemas.JwtVerify = Header(
         alias="auth-token", validation_alias="auth_token", convert_underscores=True

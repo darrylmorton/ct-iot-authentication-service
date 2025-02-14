@@ -13,25 +13,28 @@ REQUEST_LATENCY = Histogram(
 REQUEST_IN_PROGRESS = Gauge(
     "http_requests_in_progress", "HTTP Requests in progress", ["method", "path"]
 )
+CPU_USAGE = Gauge("process_cpu_usage", "Current CPU usage in percent")
+MEMORY_USAGE = Gauge("process_memory_usage_bytes", "Current memory usage in bytes")
 
 
-def observability(status_code=200):
+def observability(method: str, path: str, status_code=200):
     def outer_wrapper(func):
         @wraps(func)
         async def inner_wrapper(*args, **kwargs):
             start_time = time.time()
-            request = kwargs.get("request")
-            method = request["method"]
-            path = request["path"]
 
             REQUEST_IN_PROGRESS.labels(method=method, path=path).inc()
             REQUEST_COUNT.labels(method=method, status=status_code, path=path).inc()
+
+            # returns JSONResponse with status_code and content
+            response = await func(*args, **kwargs)
+
             REQUEST_LATENCY.labels(
-                method=method, status=status_code, path=path
+                method=method, status=response.status_code, path=path
             ).observe(time.time() - start_time)
             REQUEST_IN_PROGRESS.labels(method=method, path=path).dec()
 
-            return await func(*args, **kwargs)
+            return response
 
         return inner_wrapper
 

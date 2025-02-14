@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from fastapi import HTTPException
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, field_validator, Field, ConfigDict
 from pydantic_core.core_schema import ValidationInfo
 
 from utils.app_util import AppUtil
@@ -9,6 +9,10 @@ from utils.auth_util import AuthUtil
 
 
 class JwtBase(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class Jwt(JwtBase):
     id: str
 
     @field_validator("id")
@@ -20,7 +24,17 @@ class JwtBase(BaseModel):
         return v
 
 
-class JwtCreateBase(JwtBase):
+class JwtCreate(Jwt):
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "examples": [
+                {"id": "848a3cdd-cafd-4ec6-a921-afb0bcc841dd", "is_admin": False},
+                {"id": "eaf0bb67-288b-4e56-860d-e727b4f57ff9", "is_admin": True},
+            ]
+        },
+    )
+
     is_admin: bool
 
     @field_validator("is_admin")
@@ -32,21 +46,7 @@ class JwtCreateBase(JwtBase):
         return v
 
 
-class JwtCreate(JwtCreateBase):
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {"id": "848a3cdd-cafd-4ec6-a921-afb0bcc841dd", "is_admin": False},
-                {"id": "eaf0bb67-288b-4e56-860d-e727b4f57ff9", "is_admin": True},
-            ]
-        }
-    }
-
-    class ConfigDict:
-        from_attributes = True
-
-
-class JwtPayloadBase(JwtBase):
+class JwtPayload(Jwt):
     is_admin: bool
 
     @field_validator("is_admin")
@@ -58,12 +58,11 @@ class JwtPayloadBase(JwtBase):
         return v
 
 
-class JwtPayload(JwtPayloadBase):
-    class ConfigDict:
-        from_attributes = True
-
-
 class JwtVerifyBase(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class JwtVerify(JwtVerifyBase):
     auth_token: str = Field(alias="auth-token", validation_alias="auth_token")
 
     @field_validator("auth_token")
@@ -84,8 +83,3 @@ class JwtVerifyBase(BaseModel):
             )
 
         return v
-
-
-class JwtVerify(JwtVerifyBase):
-    class ConfigDict:
-        from_attributes = True

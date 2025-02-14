@@ -8,9 +8,11 @@ from decorators.metrics import observability
 
 router = APIRouter()
 
+ROUTER_PATH = "/healthz"
 
-@router.get("/healthz")
-@observability
+
+@router.get(ROUTER_PATH)
+@observability(path=ROUTER_PATH, method="GET", status_code=HTTPStatus.OK)
 async def health() -> JSONResponse:
     return JSONResponse(
         status_code=HTTPStatus.OK,
