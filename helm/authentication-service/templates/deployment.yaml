@@ -36,7 +36,51 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
-            {{- toYaml .Values.image.env | nindent 12 }}
+            - name: SENTRY_TRACES_SAMPLE_RATE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: sentryTracesSampleRate
+            - name: SENTRY_PROFILES_SAMPLE_RATE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: sentryProfilesSampleRate
+            - name: SENTRY_SAMPLE_RATE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: sentrySampleRate
+            - name: ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: environment
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: logLevel
+            - name: SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: serviceName
+            - name: UVICORN_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-config
+                  key: uvicornPort
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-secret
+                  key: jwtSecret
+            - name: JWT_EXPIRY_SECONDS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-secret
+                  key: jwtExpirySeconds
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

@@ -17,24 +17,13 @@ image:
   tag: "latest"
   # Overrides environment variables
   env:
-    - name: "SENTRY_TRACES_SAMPLE_RATE"
-      value: "1.0"
-    - name: "SENTRY_PROFILES_SAMPLE_RATE"
-      value: "0.5"
-    - name: "SENTRY_SAMPLE_RATE"
-      value: "50"
-    - name: "ENVIRONMENT"
-      value: "test"
-    - name: "LOG_LEVEL"
-      value: "INFO"
-    - name: "SERVICE_NAME"
-      value: "authentication-service"
-    - name: "UVICORN_PORT"
-      value: "8001"
-    - name: "JWT_SECRET"
-      value: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    - name: "JWT_EXPIRY_SECONDS"
-      value: "3600"
+    sentryTracesSampleRate: 1.0
+    sentryProfilesSampleRate: 0.5
+    sentrySampleRate: 50
+    environment: production
+    logLevel: INFO
+    serviceName: authentication-service
+    uvicornPort: 8001
 
 # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
