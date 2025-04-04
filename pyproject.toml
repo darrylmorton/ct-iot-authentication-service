@@ -15,10 +15,11 @@ fastapi = {version = "^0.115.2", extras = ["standard"]}
 structlog = "^24.2.0"
 python-dotenv = "^1.0.1"
 toml = "^0.10.2"
-python-jose = {version = "^3.3.0", extras = ["cryptography"]}
+python-jose = {version = "^3.4.0", extras = ["cryptography"]}
 requests = "^2.32.3"
 sentry-sdk = {version = "^2.11.0", extras = ["fastapi"]}
 prometheus-client = "^0.21.1"
+psutil = "^7.0.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.2.2"
