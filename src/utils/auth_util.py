@@ -16,7 +16,7 @@ class AuthUtil:
         )
 
     @staticmethod
-    def decode_token(auth_token: str) -> dict:
+    def decode_token(auth_token: str):
         try:
             return jwt.decode(auth_token, config.JWT_SECRET, algorithms=["HS256"])
 
@@ -34,7 +34,7 @@ class AuthUtil:
                 detail="Expired token error",
             )
         except JWTError as error:
-            log.debug(f"decode_token - invalid token {error}")
+            log.debug(f"*** decode_token - invalid token {error}")
 
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT"

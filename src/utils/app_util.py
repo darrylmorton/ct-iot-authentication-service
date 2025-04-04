@@ -56,3 +56,11 @@ class AppUtil:
         # valid uuid4. This is bad for validation purposes.
 
         return str(val) == uuid_string
+
+    @staticmethod
+    def is_metric_endpoint(request_path: str) -> bool:
+        for item in config.METRIC_ENDPOINTS:
+            if item == request_path:
+                return True
+
+        return False

@@ -34,6 +34,9 @@ JWT_EXPIRY_SECONDS=
 
 ## Build
 ```
+# for minikube (local development)
+eval $(minikube docker-env)
+
 make local-build
 ```
 
@@ -51,4 +54,22 @@ make dev-server-start
 ### Tests
 ```
 make test
+```
+
+### Helm | K8s 
+```
+helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.2
+helm secrets encrypt helm/authentication-service/secrets-decrypted/credentials.yaml.dec > helm/authentication-service/secrets/credentials.yaml helm/authentication-service -n ct-iot
+
+# development
+helm secrets install authentication-service helm/authentication-service -f helm/authentication-service/local-values.yaml -f helm/authentication-service/secrets/credentials.yaml -n ct-iot
+helm upgrade authentication-service helm/authentication-service -f helm/authentication-service/local-values.yaml -n ct-iot
+
+k -n ct-iot port-forward svc/authentication-service 8001:9001 &
+
+# production
+helm secrets install authentication-service helm/authentication-service -f helm/authentication-service/values.yaml -f helm/authentication-service/secrets/credentials.yaml -n ct-iot
+helm upgrade authentication-service helm/authentication-service -f helm/authentication-service/values.yaml -n ct-iot
+
+helm uninstall authentication-service -n ct-iot
 ```

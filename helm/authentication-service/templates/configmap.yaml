@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authentication-service.fullname" . }}-config
+  labels:
+    app: ct-iot
+data:
+  sentryTracesSampleRate: {{ .Values.image.env.sentryTracesSampleRate | quote }}
+  sentryProfilesSampleRate: {{ .Values.image.env.sentryProfilesSampleRate | quote }}
+  sentrySampleRate: {{ .Values.image.env.sentrySampleRate | quote }}
+  environment: {{ .Values.image.env.environment | quote }}
+  logLevel: {{ .Values.image.env.logLevel | quote }}
+  serviceName: {{ .Values.image.env.serviceName | quote }}
+  uvicornPort: {{ .Values.image.env.uvicornPort | quote }}

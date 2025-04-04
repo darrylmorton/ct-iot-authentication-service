@@ -20,8 +20,8 @@ SENTRY_SAMPLE_RATE = int(os.environ.get("SENTRY_SAMPLE_RATE"))
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
 LOG_LEVEL = os.environ.get("LOG_LEVEL")
 SERVICE_NAME = os.environ.get("SERVICE_NAME")
-APP_PORT = os.environ.get("UVICORN_PORT") or 8000
+APP_PORT = os.environ.get("UVICORN_PORT") or 8001
 JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_EXPIRY_SECONDS = int(os.environ.get("JWT_EXPIRY_SECONDS"))
 
-JWT_EXCLUDED_ENDPOINTS = ["/healthz", "/api/jwt"]
+METRIC_ENDPOINTS = ["/healthz", "/api/jwt"]
