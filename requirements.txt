@@ -1,6 +1,6 @@
 toml~=0.10.2
 fastapi~=0.115.2
-python-jose~=3.3.0
+python-jose~=3.4.0
 starlette~=0.40.0
 python-dotenv~=1.0.1
 structlog~=24.4.0
