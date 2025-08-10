@@ -9,4 +9,4 @@ venv/
 htmlcov/
 .coverage
 .ruff_cache
-helm/authentication-service/secrets-decrypted/credentials.yaml.dec
+helm/authentication-service/secrets-decrypted/

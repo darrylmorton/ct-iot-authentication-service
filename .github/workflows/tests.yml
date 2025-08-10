@@ -1,76 +1,13 @@
-name: Lint, Tests
+name: Build, Lint, Tests
 
 on:
   push:
     branches-ignore: [ 'main' ]
 
-env:
-  SENTRY_TRACES_SAMPLE_RATE: 1.0
-  SENTRY_PROFILES_SAMPLE_RATE: 0.5
-  SENTRY_SAMPLE_RATE: 50
-  SERVICE_NAME: authentication-service
-  LOG_LEVEL: DEBUG
-  ENVIRONMENT: test
-  UVICORN_PORT: 8001
-  JWT_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-  JWT_EXPIRY_SECONDS: 3600
-
 jobs:
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up python:wq
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.9'
-
-      - name: Load cached Poetry installation
-        id: cached-poetry
-        uses: actions/cache@v4
-        with:
-          path: ~/.local  # the path depends on the OS
-          key: poetry-0  # increment to reset cache
-
-      - name: Install Poetry
-        if: steps.cached-poetry.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@v1
-
-      - name: Install project
-        run: poetry install
-
-      - name: Run lint
-        run: make lint
-
-  unit-tests:
-    runs-on: ubuntu-latest
-    needs: [ lint ]
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up python:wq
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.9'
-
-      - name: Load cached Poetry installation
-        id: cached-poetry
-        uses: actions/cache@v4
-        with:
-          path: ~/.local  # the path depends on the OS
-          key: poetry-0  # increment to reset cache
-
-      - name: Install Poetry
-        if: steps.cached-poetry.outputs.cache-hit != 'true'
-        uses: snok/install-poetry@v1
-
-      - name: Install project
-        run: poetry install
-
-      - name: Run unit tests
-        run: make test-unit
+  call-workflow:
+    uses: ./.github/workflows/action.yml
+    with:
+      test-unit: true
+    secrets:
+      repo-token: ${{ secrets.GITHUB_TOKEN }}

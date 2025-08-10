@@ -4,20 +4,27 @@ from fastapi import APIRouter, Header, Body, HTTPException
 from starlette.responses import JSONResponse
 
 import schemas
+from decorators.metrics import observability
 from logger import log
 from utils.auth_util import AuthUtil
 
 router = APIRouter()
 
-ROUTER_PATH = "/jwt"
+ROUTE_PATH = "/jwt"
 
 
-@router.post(ROUTER_PATH, status_code=HTTPStatus.OK)
+@router.post(ROUTE_PATH, status_code=HTTPStatus.OK)
+@observability(path=ROUTE_PATH, method="POST")
 async def jwt_create(
     payload: schemas.JwtPayload = Body(embed=False),
 ) -> JSONResponse:
     try:
-        token = AuthUtil.encode_token(_id=payload.id, _admin=payload.is_admin)
+        token = AuthUtil.encode_token(
+            _id=payload.id,
+            _admin=payload.is_admin,
+            route_path=ROUTE_PATH,
+            method="POST",
+        )
 
         return JSONResponse(status_code=HTTPStatus.OK, content=token)
     except HTTPException as error:
@@ -35,7 +42,8 @@ async def jwt_create(
         )
 
 
-@router.get(ROUTER_PATH, status_code=HTTPStatus.OK)
+@router.get(ROUTE_PATH, status_code=HTTPStatus.OK)
+@observability(path=ROUTE_PATH, method="GET")
 async def jwt_verify(
     headers: schemas.JwtVerify = Header(
         alias="auth-token", validation_alias="auth_token", convert_underscores=True

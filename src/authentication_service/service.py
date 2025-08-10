@@ -1,8 +1,6 @@
 import contextlib
-import time
 from http import HTTPStatus
 
-import psutil
 import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
@@ -12,13 +10,6 @@ from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.responses import JSONResponse
 
-from decorators.metrics import (
-    REQUEST_IN_PROGRESS,
-    REQUEST_COUNT,
-    REQUEST_LATENCY,
-    CPU_USAGE,
-    MEMORY_USAGE,
-)
 from logger import log
 import config
 from routers import health, jwt
@@ -70,34 +61,6 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
         status_code=HTTPStatus.UNAUTHORIZED,
         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
     )
-
-
-@app.middleware("http")
-async def system_metrics(request: Request, call_next):
-    log.debug("middleware - system_metrics")
-
-    start_time = time.time()
-    path = request.url.path
-
-    # returns JSONResponse with status_code and content
-    response = await call_next(request)
-
-    if AppUtil.is_metric_endpoint(path):
-        method = request.method
-        status_code = 200
-
-        REQUEST_IN_PROGRESS.labels(method=method, path=path).inc()
-        REQUEST_COUNT.labels(method=method, status=status_code, path=path).inc()
-
-        REQUEST_LATENCY.labels(
-            method=method, status=response.status_code, path=path
-        ).observe(time.time() - start_time)
-        REQUEST_IN_PROGRESS.labels(method=method, path=path).dec()
-
-    CPU_USAGE.set(psutil.cpu_percent())
-    MEMORY_USAGE.set(psutil.Process().memory_info().rss)
-
-    return response
 
 
 # prometheus metrics

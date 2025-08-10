@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ct-iot-authentication-service"
-version = "1.0.5"
+version = "1.0.6"
 description = "ct-iot-authentication-service"
 authors = ["Darryl Morton"]
 license = "GNU"
@@ -20,6 +20,7 @@ requests = "^2.32.3"
 sentry-sdk = {version = "^2.11.0", extras = ["fastapi"]}
 prometheus-client = "^0.21.1"
 psutil = "^7.0.0"
+pydantic = "^2.11.7"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.2.2"

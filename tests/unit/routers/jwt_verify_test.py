@@ -3,7 +3,6 @@ from jose import jwt
 import config
 import tests.config as test_config
 from authentication_service.service import app
-from logger import log
 from tests.helper.routes_helper import RoutesHelper
 from utils.auth_util import AuthUtil
 
@@ -55,10 +54,8 @@ class TestJwtVerify:
             test_config.JWT_SECRET,
             algorithm="HS256",
         )
-        log.debug(f"{invalid_token=}")
 
         response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
-        log.debug(f"{response=}")
 
         assert response.status_code == 401
 
