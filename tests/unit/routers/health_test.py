@@ -1,11 +1,11 @@
 from authentication_service.service import app
-from config import APP_VERSION
 from tests.helper.routes_helper import RoutesHelper
+from utils.app_util import AppUtil
 
 
 class TestHealth:
     async def test_health(self):
-        expected_result = {"message": "ok", "version": APP_VERSION}
+        expected_result = {"message": "ok", "version": AppUtil.get_app_version()}
 
         response = await RoutesHelper.http_client(app, "/healthz")
 

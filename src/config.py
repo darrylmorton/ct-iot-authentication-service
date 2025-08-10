@@ -2,12 +2,9 @@ import os
 
 from dotenv import load_dotenv
 
-from utils.app_util import AppUtil
-
 load_dotenv()
 
 
-APP_VERSION = AppUtil.get_app_version()
 HTTP_STATUS_CODE_EXPIRED_TOKEN = 498
 
 AWS_REGION = os.environ.get("AWS_REGION")

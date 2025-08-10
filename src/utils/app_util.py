@@ -13,7 +13,7 @@ class AppUtil:
     def set_openapi_info(app: FastAPI) -> FastAPI:
         app.openapi_schema = get_openapi(
             title=config.SERVICE_NAME,
-            version=config.APP_VERSION,
+            version=AppUtil.get_app_version(),
             routes=app.routes,
         )
 
