@@ -83,7 +83,7 @@ class JwtVerify(JwtVerifyBase):
         except KeyError:
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED,
-                detail=f"fInvalid JWT payload {payload}",
+                detail=f"Invalid JWT payload {payload}",
             )
 
         return v
