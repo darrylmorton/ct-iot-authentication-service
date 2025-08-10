@@ -1,32 +1,22 @@
 from http import HTTPStatus
 
 from fastapi import HTTPException
-from pydantic import BaseModel, field_validator, Field, ConfigDict
+from pydantic import (
+    BaseModel,
+    field_validator,
+    Field,
+    ConfigDict,
+)
 from pydantic_core.core_schema import ValidationInfo
 
+from decorators.metrics import REQUEST_COUNT
 from utils.app_util import AppUtil
 from utils.auth_util import AuthUtil
 
 
+# TODO validate missing fields in JWT payload
 class JwtBase(BaseModel):
     id: str
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class Jwt(JwtBase):
-    @field_validator("id")
-    @classmethod
-    def validate_id(cls, v: str, info: ValidationInfo):
-        if info.field_name == "id" and not AppUtil.validate_uuid4(v):
-            raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT id"
-            )
-
-        return v
-
-
-class JwtIsAdminBase(Jwt):
     is_admin: bool
 
     model_config = ConfigDict(
@@ -40,14 +30,36 @@ class JwtIsAdminBase(Jwt):
     )
 
 
-class JwtPayload(JwtIsAdminBase):
-    @field_validator("is_admin")
+class JwtPayload(JwtBase):
+    @field_validator("id", mode="before")
     @classmethod
-    def validate_is_admin(cls, v: bool, info: ValidationInfo):
-        if info.field_name == "is_admin" and not isinstance(v, bool):
-            raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT is_admin"
-            )
+    def validate_id(cls, v: str, info: ValidationInfo):
+        if not AppUtil.validate_uuid4(v):
+            try:
+                raise HTTPException(
+                    status_code=HTTPStatus.UNAUTHORIZED,
+                    detail=f"Invalid JWT {info.field_name} is not a valid UUID4",
+                )
+            finally:
+                REQUEST_COUNT.labels(
+                    method="POST", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                ).inc()
+
+        return v
+
+    @field_validator("is_admin", mode="before")
+    @classmethod
+    def validate_is_admin(cls, v: str, info: ValidationInfo):
+        if not isinstance(v, bool):
+            try:
+                raise HTTPException(
+                    status_code=HTTPStatus.UNAUTHORIZED,
+                    detail=f"Invalid JWT {info.field_name} is not a boolean",
+                )
+            finally:
+                REQUEST_COUNT.labels(
+                    method="POST", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                ).inc()
 
         return v
 
@@ -59,21 +71,19 @@ class JwtVerifyBase(BaseModel):
 
 
 class JwtVerify(JwtVerifyBase):
-    @field_validator("auth_token")
+    @field_validator("auth_token", mode="before")
     @classmethod
-    def validate_auth_token_header(cls, v: str, info: ValidationInfo):
-        if info.field_name == "auth_token" and not isinstance(v, str):
-            raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid request header"
-            )
+    def validate_auth_token_header(cls, v: str):
+        payload = {}
 
         try:
-            payload = AuthUtil.decode_token(v)
-
+            payload = AuthUtil.decode_token(auth_token=v)
             JwtPayload.model_validate(payload)
+
         except KeyError:
             raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT payload"
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"fInvalid JWT payload {payload}",
             )
 
         return v

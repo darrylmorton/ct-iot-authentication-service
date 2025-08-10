@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from jose import jwt, JWTError, ExpiredSignatureError
 
 import config
+from decorators.metrics import REQUEST_COUNT
 from logger import log
 
 
@@ -34,7 +35,7 @@ class AuthUtil:
                 detail="Expired token error",
             )
         except JWTError as error:
-            log.debug(f"*** decode_token - invalid token {error}")
+            log.debug(f"decode_token - invalid token {error}")
 
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT"
@@ -45,9 +46,13 @@ class AuthUtil:
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT payload"
             )
+        finally:
+            REQUEST_COUNT.labels(
+                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+            ).inc()
 
     @staticmethod
-    def encode_token(_id: str, _admin: bool):
+    def encode_token(_id: str, _admin: bool, route_path: str, method: str):
         try:
             return {
                 "token": jwt.encode(
@@ -76,6 +81,8 @@ class AuthUtil:
         except JWTError as error:
             log.debug(f"encode_token - jwt error {error}")
 
-            raise HTTPException(
-                status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=error
-            )
+            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail=error)
+        finally:
+            REQUEST_COUNT.labels(
+                method=method, status=HTTPStatus.UNAUTHORIZED, path=route_path
+            ).inc()

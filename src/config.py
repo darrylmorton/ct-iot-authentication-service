@@ -25,3 +25,15 @@ JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_EXPIRY_SECONDS = int(os.environ.get("JWT_EXPIRY_SECONDS"))
 
 METRIC_ENDPOINTS = ["/healthz", "/api/jwt"]
+
+# JWT_EXCLUDED_ENDPOINTS = [
+#     "/favicon.ico",
+#     "/openapi.json",
+#     "/docs",
+#     "/healthz",
+#     "/api/signup",
+#     "/api/login",
+#     "/api/verify-account/",
+#     "/metrics",
+#     "/metrics/",
+# ]
