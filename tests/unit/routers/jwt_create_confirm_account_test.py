@@ -64,7 +64,7 @@ class TestJwtCreateConfirmAccount:
         response_json = response.json()
 
         actual_result = jwt.decode(
-            response_json,
+            response_json["token"],
             test_config.JWT_SECRET_CONFIRM_ACCOUNT,
             algorithms=["HS256"],
         )

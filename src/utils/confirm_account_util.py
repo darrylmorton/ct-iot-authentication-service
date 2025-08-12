@@ -65,15 +65,17 @@ class ConfirmAccountUtil:
     @staticmethod
     def encode_token(username: str, email_type: str):
         try:
-            return jwt.encode(
-                {
-                    "username": username,
-                    "email_type": email_type,
-                    "exp": ConfirmAccountUtil.create_token_expiry(),
-                },
-                config.JWT_SECRET_CONFIRM_ACCOUNT,
-                algorithm="HS256",
-            )
+            return {
+                "token": jwt.encode(
+                    {
+                        "username": username,
+                        "email_type": email_type,
+                        "exp": ConfirmAccountUtil.create_token_expiry(),
+                    },
+                    config.JWT_SECRET_CONFIRM_ACCOUNT,
+                    algorithm="HS256",
+                )
+            }
         except KeyError as error:
             log.debug(f"encode_token - key error {error}")
 
