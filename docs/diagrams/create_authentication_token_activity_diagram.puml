@@ -1,0 +1,28 @@
+@startuml
+title Create Authentication Token Activity Diagram
+
+:Request;
+note
+    POST - /jwt/authentication
+end note
+
+:Authentication Service;
+
+skinparam ActivityDiamondBackgroundColor orchid
+skinparam ConditionalEndStyle hline
+switch (JWT_ERROR?)
+case (no)
+    #limegreen:Return 200;
+    kill;
+case (KeyError)
+    #tomato:Return 401;
+    kill;
+case (TypeError)
+    #tomato:Return 401;
+    kill;
+case (JWTError)
+    #tomato:Return 500;
+    kill;
+endswitch
+
+@enduml
