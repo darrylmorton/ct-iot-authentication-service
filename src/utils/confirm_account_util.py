@@ -50,19 +50,6 @@ class ConfirmAccountUtil:
             )
 
     @staticmethod
-    def email_type_selector(email_type: str) -> str:
-        if AppUtil.email_types(email_type):
-            return email_type
-
-        else:
-            log.debug(f"email_type_selector - type not found {email_type}")
-
-            raise HTTPException(
-                status_code=HTTPStatus.BAD_REQUEST,
-                detail="Email type not supported",
-            )
-
-    @staticmethod
     def encode_token(username: str, email_type: str):
         try:
             return {
@@ -92,3 +79,16 @@ class ConfirmAccountUtil:
             log.debug(f"encode_token - jwt error {error}")
 
             raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=error)
+
+    @staticmethod
+    def email_type_selector(email_type: str) -> str:
+        if AppUtil.email_types(email_type):
+            return email_type
+
+        else:
+            log.debug(f"email_type_selector - type not found {email_type}")
+
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail="Email type not supported",
+            )
