@@ -1,7 +1,7 @@
 from unittest import skip
 
 
-class TestAuthUtil:
+class TestConfirmAccountUtil:
     @skip
     def test_create_token_expiry(self):
         pass
@@ -12,4 +12,8 @@ class TestAuthUtil:
 
     @skip
     def test_encode_token(self):
+        pass
+
+    @skip
+    def email_type_selector(self):
         pass

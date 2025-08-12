@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from pathlib import Path
 
@@ -64,3 +65,13 @@ class AppUtil:
                 return True
 
         return False
+
+    @staticmethod
+    def create_token_expiry(_seconds: int) -> datetime:
+        return datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(
+            seconds=_seconds
+        )
+
+    @staticmethod
+    def email_types(email_type: str) -> bool:
+        return email_type in config.EMAIL_VERIFICATION_TYPES

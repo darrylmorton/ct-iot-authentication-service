@@ -7,12 +7,12 @@ class RoutesHelper:
     TEST_URL = f"http://localhost:{APP_PORT}"
 
     @staticmethod
-    async def http_client(app, path, token=None) -> Response:
+    async def http_client(app, path, token_name=None, token=None) -> Response:
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url=RoutesHelper.TEST_URL
         ) as ac:
             if token:
-                ac.headers["auth-token"] = token
+                ac.headers[token_name] = token
 
             return await ac.get(path)
 

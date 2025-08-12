@@ -7,7 +7,7 @@ from tests.helper.routes_helper import RoutesHelper
 from utils.auth_util import AuthUtil
 
 
-class TestJwtVerify:
+class TestJwtVerifyAuthentication:
     id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     is_admin = False
     token = jwt.encode(
@@ -17,7 +17,9 @@ class TestJwtVerify:
     )
 
     async def test_valid_token(self):
-        response = await RoutesHelper.http_client(app, "/api/jwt", self.token)
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", self.token
+        )
         actual_result = response.json()
 
         assert response.status_code == 200
@@ -25,7 +27,9 @@ class TestJwtVerify:
         assert actual_result["is_admin"] == self.is_admin
 
     async def test_missing_token(self):
-        response = await RoutesHelper.http_client(app, "/api/jwt", {})
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", {}
+        )
 
         assert response.status_code == 401
 
@@ -40,7 +44,9 @@ class TestJwtVerify:
             algorithm="HS256",
         )
 
-        response = await RoutesHelper.http_client(app, "/api/jwt", expired_token)
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", expired_token
+        )
 
         assert response.status_code == config.HTTP_STATUS_CODE_EXPIRED_TOKEN
 
@@ -55,7 +61,9 @@ class TestJwtVerify:
             algorithm="HS256",
         )
 
-        response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", invalid_token
+        )
 
         assert response.status_code == 401
 
@@ -65,7 +73,9 @@ class TestJwtVerify:
             test_config.JWT_SECRET,
             algorithm="HS256",
         )
-        response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", invalid_token
+        )
 
         assert response.status_code == 401
 
@@ -75,7 +85,9 @@ class TestJwtVerify:
             test_config.JWT_SECRET,
             algorithm="HS256",
         )
-        response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", invalid_token
+        )
 
         assert response.status_code == 401
 
@@ -89,6 +101,8 @@ class TestJwtVerify:
             "",
             algorithm="HS256",
         )
-        response = await RoutesHelper.http_client(app, "/api/jwt", invalid_token)
+        response = await RoutesHelper.http_client(
+            app, "/api/jwt/authentication", "auth-token", invalid_token
+        )
 
         assert response.status_code == 401

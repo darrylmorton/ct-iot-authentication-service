@@ -3,7 +3,7 @@
 ## Description
 The `authentication-service` verifies JWTs, and creates them for login.
 
-[Diagrams](./docs/DIAGRAMS.md)
+[Diagrams](./docs/diagrams)
 
 ## Requirements
 python v3.11.9+  

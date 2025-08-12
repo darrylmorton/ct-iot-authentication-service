@@ -1,0 +1,30 @@
+@startuml
+title Verify Authentication Token Activity Diagram
+
+:Request;
+note
+    GET - /jwt/authentication
+end note
+
+:Authentication Service;
+
+skinparam ActivityDiamondBackgroundColor orchid
+switch (JWT_ERROR?)
+case (no)
+    #limegreen:Return 200;
+    kill;
+case (TypeError)
+    #tomato:Return 401;
+    kill;
+case (KeyError)
+    #tomato:Return 401;
+    kill;
+case (ExpiredSignatureError)
+    #tomato:Return 498;
+    kill;
+case (JWTError)
+    #tomato:Return 401;
+    kill;
+endswitch
+
+@enduml
