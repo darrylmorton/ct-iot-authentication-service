@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from email_validator import EmailSyntaxError, validate_email
 from fastapi import HTTPException
 from pydantic import (
     BaseModel,
@@ -9,9 +10,11 @@ from pydantic import (
 )
 from pydantic_core.core_schema import ValidationInfo
 
+import config
 from decorators.metrics import REQUEST_COUNT
 from utils.app_util import AppUtil
 from utils.auth_util import AuthUtil
+from utils.confirm_account_util import ConfirmAccountUtil
 
 
 # TODO validate missing fields in JWT payload
@@ -77,7 +80,7 @@ class JwtVerify(JwtVerifyBase):
         payload = {}
 
         try:
-            payload = AuthUtil.decode_token(auth_token=v)
+            payload = AuthUtil.decode_token(token=v)
             JwtPayload.model_validate(payload)
 
         except KeyError:
@@ -85,5 +88,97 @@ class JwtVerify(JwtVerifyBase):
                 status_code=HTTPStatus.UNAUTHORIZED,
                 detail=f"Invalid JWT payload {payload}",
             )
+        finally:
+            REQUEST_COUNT.labels(
+                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+            ).inc()
+
+        return v
+
+
+class ConfirmAccountBase(BaseModel):
+    username: str
+    email_type: str
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "examples": [
+                {
+                    "username": "foo@example.com",
+                    "email_type": config.EMAIL_VERIFICATION_TYPES[0],
+                },
+            ]
+        },
+    )
+
+
+class ConfirmAccount(ConfirmAccountBase):
+    @field_validator("username", mode="before")
+    @classmethod
+    def validate_username(cls, v: str, info: ValidationInfo):
+        try:
+            validate_email(v, check_deliverability=False)
+
+        except EmailSyntaxError:
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT {info.field_name} is not an email",
+            )
+        finally:
+            REQUEST_COUNT.labels(
+                method="POST",
+                status=HTTPStatus.UNAUTHORIZED,
+                path="/jwt/confirm-account",
+            ).inc()
+
+        return v
+
+    @field_validator("email_type", mode="before")
+    @classmethod
+    def validate_email_type(cls, v: str, info: ValidationInfo):
+        if not AppUtil.email_types(v):
+            try:
+                raise HTTPException(
+                    status_code=HTTPStatus.UNAUTHORIZED,
+                    detail=f"Invalid JWT {info.field_name} is not an email type",
+                )
+            finally:
+                REQUEST_COUNT.labels(
+                    method="POST",
+                    status=HTTPStatus.UNAUTHORIZED,
+                    path="/jwt/confirm-account",
+                ).inc()
+
+        return v
+
+
+class VerifyConfirmAccountBase(BaseModel):
+    confirm_account_token: str = Field(
+        alias="confirm-account-token", validation_alias="confirm_account_token"
+    )
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class VerifyConfirmAccount(VerifyConfirmAccountBase):
+    @field_validator("confirm_account_token", mode="before")
+    @classmethod
+    def validate_confirm_account_token_header(cls, v: str):
+        payload = {}
+
+        try:
+            payload = ConfirmAccountUtil.decode_token(token=v)
+            JwtPayload.model_validate(payload)
+
+        except KeyError:
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT payload {payload}",
+            )
+        finally:
+            REQUEST_COUNT.labels(
+                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+            ).inc()
 
         return v

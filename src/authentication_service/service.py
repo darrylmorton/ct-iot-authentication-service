@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 
 from logger import log
 import config
-from routers import health, jwt
+from routers import health, jwt_authentication, jwt_confirm_account
 from utils.app_util import AppUtil
 
 
@@ -69,6 +69,7 @@ app.mount("/metrics/", metrics_app)
 
 app.include_router(health.router, include_in_schema=False)
 
-app.include_router(jwt.router, prefix="/api", tags=["jwt"])
+app.include_router(jwt_authentication.router, prefix="/api", tags=["authentication"])
 
+app.include_router(jwt_confirm_account.router, prefix="/api", tags=["confirm-account"])
 app = AppUtil.set_openapi_info(app=app)

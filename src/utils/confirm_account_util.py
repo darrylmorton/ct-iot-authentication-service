@@ -5,26 +5,29 @@ from fastapi import HTTPException
 from jose import jwt, JWTError, ExpiredSignatureError
 
 import config
-from decorators.metrics import REQUEST_COUNT
 from logger import log
 from utils.app_util import AppUtil
 
 
-class AuthUtil:
+class ConfirmAccountUtil:
     @staticmethod
-    def create_token_expiry(_seconds=config.JWT_EXPIRY_SECONDS) -> datetime:
+    def create_token_expiry(
+        _seconds=config.JWT_EXPIRY_SECONDS_CONFIRM_ACCOUNT,
+    ) -> datetime:
         return AppUtil.create_token_expiry(int(f"{_seconds}"))
 
     @staticmethod
-    def decode_token(token: str):
+    def decode_token(token: str) -> dict:
         try:
-            return jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
+            return jwt.decode(
+                token, config.JWT_SECRET_CONFIRM_ACCOUNT, algorithms=["HS256"]
+            )
 
         except TypeError as error:
             log.debug(f"decode_token - type error {error}")
 
             raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Unauthorised error"
+                status_code=HTTPStatus.BAD_REQUEST, detail="Token error"
             )
         except ExpiredSignatureError as error:
             log.debug(f"decode_token - expired signature {error}")
@@ -45,43 +48,45 @@ class AuthUtil:
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid JWT payload"
             )
-        finally:
-            REQUEST_COUNT.labels(
-                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
-            ).inc()
 
     @staticmethod
-    def encode_token(_id: str, _admin: bool, route_path: str, method: str):
-        try:
-            return {
-                "token": jwt.encode(
-                    {
-                        "id": _id,
-                        "is_admin": _admin,
-                        "exp": AuthUtil.create_token_expiry(),
-                    },
-                    config.JWT_SECRET,
-                    algorithm="HS256",
-                )
-            }
+    def email_type_selector(email_type: str) -> str:
+        if AppUtil.email_types(email_type):
+            return email_type
 
+        else:
+            log.debug(f"email_type_selector - type not found {email_type}")
+
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail="Email type not supported",
+            )
+
+    @staticmethod
+    def encode_token(username: str, email_type: str):
+        try:
+            return jwt.encode(
+                {
+                    "username": username,
+                    "email_type": email_type,
+                    "exp": ConfirmAccountUtil.create_token_expiry(),
+                },
+                config.JWT_SECRET_CONFIRM_ACCOUNT,
+                algorithm="HS256",
+            )
         except KeyError as error:
             log.debug(f"encode_token - key error {error}")
 
             raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Unauthorised error"
+                status_code=HTTPStatus.BAD_REQUEST, detail="Token error"
             )
         except TypeError as error:
             log.debug(f"encode_token - type error {error}")
 
             raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED, detail="Unauthorised error"
+                status_code=HTTPStatus.BAD_REQUEST, detail="Token error"
             )
         except JWTError as error:
             log.debug(f"encode_token - jwt error {error}")
 
-            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail=error)
-        finally:
-            REQUEST_COUNT.labels(
-                method=method, status=HTTPStatus.UNAUTHORIZED, path=route_path
-            ).inc()
+            raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=error)

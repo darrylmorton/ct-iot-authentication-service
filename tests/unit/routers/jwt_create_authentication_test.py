@@ -6,7 +6,7 @@ from tests.helper.routes_helper import RoutesHelper
 from utils.auth_util import AuthUtil
 
 
-class TestJwtCreate:
+class TestJwtCreateAuthentication:
     id = "848a3cdd-cafd-4ec6-a921-afb0bcc841dd"
     is_admin = False
     token = jwt.encode(
