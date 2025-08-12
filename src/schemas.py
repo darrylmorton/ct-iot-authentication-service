@@ -38,17 +38,16 @@ class JwtPayload(JwtPayloadBase):
     @classmethod
     def validate_id(cls, v: str, info: ValidationInfo):
         if not AppUtil.validate_uuid4(v):
-            try:
-                raise HTTPException(
-                    status_code=HTTPStatus.UNAUTHORIZED,
-                    detail=f"Invalid JWT {info.field_name} is not a valid UUID4",
-                )
-            finally:
-                REQUEST_COUNT.labels(
-                    method="POST",
-                    status=HTTPStatus.UNAUTHORIZED,
-                    path="/jwt/authentication",
-                ).inc()
+            REQUEST_COUNT.labels(
+                method="POST",
+                status=HTTPStatus.UNAUTHORIZED,
+                path="/jwt/authentication",
+            ).inc()
+
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT {info.field_name} is not a valid UUID4",
+            )
 
         return v
 
@@ -56,17 +55,16 @@ class JwtPayload(JwtPayloadBase):
     @classmethod
     def validate_is_admin(cls, v: str, info: ValidationInfo):
         if not isinstance(v, bool):
-            try:
-                raise HTTPException(
-                    status_code=HTTPStatus.UNAUTHORIZED,
-                    detail=f"Invalid JWT {info.field_name} is not a boolean",
-                )
-            finally:
-                REQUEST_COUNT.labels(
-                    method="POST",
-                    status=HTTPStatus.UNAUTHORIZED,
-                    path="/jwt/authentication",
-                ).inc()
+            REQUEST_COUNT.labels(
+                method="POST",
+                status=HTTPStatus.UNAUTHORIZED,
+                path="/jwt/authentication",
+            ).inc()
+
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT {info.field_name} is not a boolean",
+            )
 
         return v
 
@@ -88,14 +86,14 @@ class JwtVerify(JwtVerifyBase):
             JwtPayload.model_validate(payload)
 
         except KeyError:
+            REQUEST_COUNT.labels(
+                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt/authentication"
+            ).inc()
+
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED,
                 detail=f"Invalid JWT payload {payload}",
             )
-        finally:
-            REQUEST_COUNT.labels(
-                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt/authentication"
-            ).inc()
 
         return v
 
@@ -125,16 +123,16 @@ class ConfirmAccountPayload(ConfirmAccountPayloadBase):
             validate_email(v, check_deliverability=False)
 
         except EmailSyntaxError:
-            raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED,
-                detail=f"Invalid JWT {info.field_name} is not an email",
-            )
-        finally:
             REQUEST_COUNT.labels(
                 method="POST",
                 status=HTTPStatus.UNAUTHORIZED,
                 path="/jwt/confirm-account",
             ).inc()
+
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT {info.field_name} is not an email",
+            )
 
         return v
 
@@ -142,17 +140,16 @@ class ConfirmAccountPayload(ConfirmAccountPayloadBase):
     @classmethod
     def validate_email_type(cls, v: str, info: ValidationInfo):
         if not AppUtil.email_types(v):
-            try:
-                raise HTTPException(
-                    status_code=HTTPStatus.UNAUTHORIZED,
-                    detail=f"Invalid JWT {info.field_name} is not an email type",
-                )
-            finally:
-                REQUEST_COUNT.labels(
-                    method="POST",
-                    status=HTTPStatus.UNAUTHORIZED,
-                    path="/jwt/confirm-account",
-                ).inc()
+            REQUEST_COUNT.labels(
+                method="POST",
+                status=HTTPStatus.UNAUTHORIZED,
+                path="/jwt/confirm-account",
+            ).inc()
+
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT {info.field_name} is not an email type",
+            )
 
         return v
 
@@ -176,15 +173,15 @@ class ConfirmAccountHeader(ConfirmAccountHeaderBase):
             ConfirmAccountPayload.model_validate(payload)
 
         except KeyError:
-            raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED,
-                detail=f"Invalid JWT payload {payload}",
-            )
-        finally:
             REQUEST_COUNT.labels(
                 method="GET",
                 status=HTTPStatus.UNAUTHORIZED,
                 path="/jwt/confirm-account",
             ).inc()
+
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f"Invalid JWT payload {payload}",
+            )
 
         return v
