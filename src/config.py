@@ -27,4 +27,4 @@ JWT_EXPIRY_SECONDS_CONFIRM_ACCOUNT = int(
     os.environ.get("JWT_EXPIRY_SECONDS_CONFIRM_ACCOUNT")
 )
 
-METRIC_ENDPOINTS = ["/healthz", "/api/jwt"]
+METRIC_ENDPOINTS = ["/healthz", "/api/jwt/authentication", "/api/jwt/confirm-account"]

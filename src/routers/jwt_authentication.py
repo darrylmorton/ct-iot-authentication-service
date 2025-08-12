@@ -10,7 +10,7 @@ from utils.auth_util import AuthUtil
 
 router = APIRouter()
 
-ROUTE_PATH = "/jwt"
+ROUTE_PATH = "/jwt/authentication"
 
 
 @router.post(ROUTE_PATH, status_code=HTTPStatus.OK)

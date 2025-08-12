@@ -16,7 +16,7 @@ ROUTE_PATH = "/jwt/confirm-account"
 @router.post(ROUTE_PATH, status_code=HTTPStatus.OK)
 @observability(path=ROUTE_PATH, method="POST")
 async def jwt_create_confirm_account(
-    payload: schemas.ConfirmAccount = Body(embed=False),
+    payload: schemas.ConfirmAccountPayload = Body(embed=False),
 ) -> JSONResponse:
     try:
         token = ConfirmAccountUtil.encode_token(
@@ -42,7 +42,7 @@ async def jwt_create_confirm_account(
 @router.get(ROUTE_PATH, status_code=HTTPStatus.OK)
 @observability(path=ROUTE_PATH, method="GET")
 async def jwt_verify_confirm_account(
-    headers: schemas.JwtVerify = Header(
+    headers: schemas.ConfirmAccountHeader = Header(
         alias="confirm-account-token",
         validation_alias="confirm_account_token",
         convert_underscores=True,

@@ -6,7 +6,7 @@ from tests.helper.routes_helper import RoutesHelper
 from utils.confirm_account_util import ConfirmAccountUtil
 
 
-class TestJwtCreateConfirmAccountCreate:
+class TestJwtCreateConfirmAccount:
     username = "foo@example.com"
     email_type = test_config.EMAIL_VERIFICATION_TYPES[0]
     token = jwt.encode(

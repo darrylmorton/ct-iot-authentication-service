@@ -18,7 +18,7 @@ from utils.confirm_account_util import ConfirmAccountUtil
 
 
 # TODO validate missing fields in JWT payload
-class JwtBase(BaseModel):
+class JwtPayloadBase(BaseModel):
     id: str
     is_admin: bool
 
@@ -33,7 +33,7 @@ class JwtBase(BaseModel):
     )
 
 
-class JwtPayload(JwtBase):
+class JwtPayload(JwtPayloadBase):
     @field_validator("id", mode="before")
     @classmethod
     def validate_id(cls, v: str, info: ValidationInfo):
@@ -45,7 +45,9 @@ class JwtPayload(JwtBase):
                 )
             finally:
                 REQUEST_COUNT.labels(
-                    method="POST", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                    method="POST",
+                    status=HTTPStatus.UNAUTHORIZED,
+                    path="/jwt/authentication",
                 ).inc()
 
         return v
@@ -61,7 +63,9 @@ class JwtPayload(JwtBase):
                 )
             finally:
                 REQUEST_COUNT.labels(
-                    method="POST", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                    method="POST",
+                    status=HTTPStatus.UNAUTHORIZED,
+                    path="/jwt/authentication",
                 ).inc()
 
         return v
@@ -90,13 +94,13 @@ class JwtVerify(JwtVerifyBase):
             )
         finally:
             REQUEST_COUNT.labels(
-                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt/authentication"
             ).inc()
 
         return v
 
 
-class ConfirmAccountBase(BaseModel):
+class ConfirmAccountPayloadBase(BaseModel):
     username: str
     email_type: str
 
@@ -113,7 +117,7 @@ class ConfirmAccountBase(BaseModel):
     )
 
 
-class ConfirmAccount(ConfirmAccountBase):
+class ConfirmAccountPayload(ConfirmAccountPayloadBase):
     @field_validator("username", mode="before")
     @classmethod
     def validate_username(cls, v: str, info: ValidationInfo):
@@ -153,7 +157,7 @@ class ConfirmAccount(ConfirmAccountBase):
         return v
 
 
-class VerifyConfirmAccountBase(BaseModel):
+class ConfirmAccountHeaderBase(BaseModel):
     confirm_account_token: str = Field(
         alias="confirm-account-token", validation_alias="confirm_account_token"
     )
@@ -161,7 +165,7 @@ class VerifyConfirmAccountBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class VerifyConfirmAccount(VerifyConfirmAccountBase):
+class ConfirmAccountHeader(ConfirmAccountHeaderBase):
     @field_validator("confirm_account_token", mode="before")
     @classmethod
     def validate_confirm_account_token_header(cls, v: str):
@@ -169,7 +173,7 @@ class VerifyConfirmAccount(VerifyConfirmAccountBase):
 
         try:
             payload = ConfirmAccountUtil.decode_token(token=v)
-            JwtPayload.model_validate(payload)
+            ConfirmAccountPayload.model_validate(payload)
 
         except KeyError:
             raise HTTPException(
@@ -178,7 +182,9 @@ class VerifyConfirmAccount(VerifyConfirmAccountBase):
             )
         finally:
             REQUEST_COUNT.labels(
-                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                method="GET",
+                status=HTTPStatus.UNAUTHORIZED,
+                path="/jwt/confirm-account",
             ).inc()
 
         return v
