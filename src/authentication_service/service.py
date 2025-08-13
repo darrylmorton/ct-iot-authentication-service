@@ -36,7 +36,8 @@ async def lifespan_wrapper(app: FastAPI):
     log.info(f"Application {config.ENVIRONMENT} environment")
 
     log.info("Starting update_process_metrics() task...")
-    asyncio.create_task(update_process_metrics())
+    global metrics_task
+    metrics_task = asyncio.create_task(update_process_metrics())
 
     if config.SENTRY_ENVIRONMENT != "local":
         sentry_sdk.init(
@@ -67,9 +68,18 @@ async def lifespan_wrapper(app: FastAPI):
     yield
     log.info(f"{config.SERVICE_NAME} is shutting down...")
 
+    log.info("Cancelling update_process_metrics() task...")
+    if metrics_task:
+        metrics_task.cancel()
+
+        try:
+            await metrics_task
+        except asyncio.CancelledError:
+            log.error("update_process_metrics() task cancelled successfully.")
+            pass
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
-
+metrics_task = None
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_: Request, exc: RequestValidationError):
