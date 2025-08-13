@@ -75,7 +75,6 @@ async def lifespan_wrapper(app: FastAPI):
             await metrics_task
         except asyncio.CancelledError:
             log.info("update_process_metrics() task cancelled successfully.")
-            pass
 
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
