@@ -78,8 +78,10 @@ async def lifespan_wrapper(app: FastAPI):
             log.error("update_process_metrics() task cancelled successfully.")
             pass
 
+
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
 metrics_task = None
+
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_: Request, exc: RequestValidationError):

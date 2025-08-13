@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ct-iot-authentication-service"
-version = "2.0.3"
+version = "2.0.4"
 description = "ct-iot-authentication-service"
 authors = ["Darryl Morton"]
 license = "GNU"
