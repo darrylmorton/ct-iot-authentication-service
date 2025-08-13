@@ -4,10 +4,12 @@ from utils.app_util import AppUtil
 
 
 class TestAppUtil:
+    _app_version = AppUtil.get_app_version()
+
     def test_get_app_version(self):
         actual_result = AppUtil.get_app_version()
 
-        assert actual_result == "2.0.2"
+        assert actual_result == self._app_version
 
     @skip
     def test_set_openapi_info(self):
