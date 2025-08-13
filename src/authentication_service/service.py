@@ -1,6 +1,8 @@
+import asyncio
 import contextlib
 from http import HTTPStatus
 
+import psutil
 import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
@@ -10,11 +12,21 @@ from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
 from starlette.responses import JSONResponse
 
+from decorators.metrics import CPU_USAGE, MEMORY_USAGE
 from logger import log
 import config
 from routers import health, jwt_authentication, jwt_confirm_account
 from utils.app_util import AppUtil
 
+
+async def update_process_metrics(interval: float = 5.0):
+    process = psutil.Process()
+
+    while True:
+        CPU_USAGE.set(psutil.cpu_percent())
+        MEMORY_USAGE.set(process.memory_info().rss)
+
+        await asyncio.sleep(interval)
 
 @contextlib.asynccontextmanager
 async def lifespan_wrapper(app: FastAPI):
@@ -22,6 +34,9 @@ async def lifespan_wrapper(app: FastAPI):
     log.info(f"Sentry {config.SENTRY_ENVIRONMENT} environment")
     log.info(f"Application {config.ENVIRONMENT} environment")
 
+    log.info(f"Starting update_process_metrics() task...")
+    asyncio.create_task(update_process_metrics())
+    
     if config.SENTRY_ENVIRONMENT != "local":
         sentry_sdk.init(
             dsn=config.SENTRY_DSN,
