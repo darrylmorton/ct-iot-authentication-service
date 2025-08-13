@@ -36,7 +36,6 @@ async def lifespan_wrapper(app: FastAPI):
     log.info(f"Application {config.ENVIRONMENT} environment")
 
     log.info("Starting update_process_metrics() task...")
-    global metrics_task
     metrics_task = asyncio.create_task(update_process_metrics())
 
     if config.SENTRY_ENVIRONMENT != "local":
