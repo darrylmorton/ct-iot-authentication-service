@@ -67,14 +67,16 @@ async def lifespan_wrapper(app: FastAPI):
     yield
     log.info(f"{config.SERVICE_NAME} is shutting down...")
 
-    log.info("Cancelling update_process_metrics() task...")
     if metrics_task:
+        log.info("Cancelling metrics_task...")
+
         metrics_task.cancel()
 
         try:
             await metrics_task
+
         except asyncio.CancelledError:
-            log.info("update_process_metrics() task cancelled successfully.")
+            log.info("metrics_task cancelled successfully")
 
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
