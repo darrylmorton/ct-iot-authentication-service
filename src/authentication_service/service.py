@@ -31,8 +31,6 @@ async def update_process_metrics(interval: float = 5.0):
 
 @contextlib.asynccontextmanager
 async def lifespan_wrapper(app: FastAPI):
-    metrics_task = None  # Ensure it's always defined
-
     log.info(f"Starting {config.SERVICE_NAME}...{app.host}")
     log.info(f"Sentry {config.SENTRY_ENVIRONMENT} environment")
     log.info(f"Application {config.ENVIRONMENT} environment")
