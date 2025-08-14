@@ -67,7 +67,6 @@ async def lifespan_wrapper(app: FastAPI):
     log.info(f"{config.SERVICE_NAME} is ready")
 
     yield
-
     log.info(f"{config.SERVICE_NAME} is shutting down...")
 
 
