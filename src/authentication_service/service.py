@@ -62,15 +62,15 @@ async def lifespan_wrapper(app: FastAPI):
             ],
         )
 
+    log.info(f"{config.SERVICE_NAME} is ready")
+
+    yield
+
     try:
         log.info("Starting update_process_metrics() task...")
         metrics_task = asyncio.create_task(update_process_metrics())
 
-        log.info(f"{config.SERVICE_NAME} is ready")
-
     finally:
-        yield
-
         log.info(f"{config.SERVICE_NAME} is shutting down...")
 
         if metrics_task:
