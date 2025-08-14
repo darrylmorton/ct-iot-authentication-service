@@ -31,52 +31,57 @@ async def update_process_metrics(interval: float = 5.0):
 
 @contextlib.asynccontextmanager
 async def lifespan_wrapper(app: FastAPI):
+    metrics_task = None  # Ensure it's always defined
+
     log.info(f"Starting {config.SERVICE_NAME}...{app.host}")
     log.info(f"Sentry {config.SENTRY_ENVIRONMENT} environment")
     log.info(f"Application {config.ENVIRONMENT} environment")
 
-    log.info("Starting update_process_metrics() task...")
-    metrics_task = asyncio.create_task(update_process_metrics())
+    try:
+        log.info("Starting update_process_metrics() task...")
+        metrics_task = asyncio.create_task(update_process_metrics())
 
-    if config.SENTRY_ENVIRONMENT != "local":
-        sentry_sdk.init(
-            dsn=config.SENTRY_DSN,
-            # Set traces_sample_rate to 1.0 to capture 100%
-            # of transactions for tracing.
-            traces_sample_rate=config.SENTRY_TRACES_SAMPLE_RATE,
-            # Set profiles_sample_rate to 1.0 to profile 100%
-            # of sampled transactions.
-            # We recommend adjusting this value in production.
-            profiles_sample_rate=config.SENTRY_PROFILES_SAMPLE_RATE,
-            sample_rate=config.SENTRY_SAMPLE_RATE,
-            environment=config.ENVIRONMENT,
-            server_name=config.SERVICE_NAME,
-            integrations=[
-                StarletteIntegration(
-                    transaction_style="endpoint",
-                    failed_request_status_codes=[403, range(500, 599)],
-                ),
-                FastApiIntegration(
-                    transaction_style="endpoint",
-                    failed_request_status_codes=[403, range(500, 599)],
-                ),
-            ],
-        )
-    log.info(f"{config.SERVICE_NAME} is ready")
+        if config.SENTRY_ENVIRONMENT != "local":
+            sentry_sdk.init(
+                dsn=config.SENTRY_DSN,
+                # Set traces_sample_rate to 1.0 to capture 100%
+                # of transactions for tracing.
+                traces_sample_rate=config.SENTRY_TRACES_SAMPLE_RATE,
+                # Set profiles_sample_rate to 1.0 to profile 100%
+                # of sampled transactions.
+                # We recommend adjusting this value in production.
+                profiles_sample_rate=config.SENTRY_PROFILES_SAMPLE_RATE,
+                sample_rate=config.SENTRY_SAMPLE_RATE,
+                environment=config.ENVIRONMENT,
+                server_name=config.SERVICE_NAME,
+                integrations=[
+                    StarletteIntegration(
+                        transaction_style="endpoint",
+                        failed_request_status_codes=[403, range(500, 599)],
+                    ),
+                    FastApiIntegration(
+                        transaction_style="endpoint",
+                        failed_request_status_codes=[403, range(500, 599)],
+                    ),
+                ],
+            )
+        log.info(f"{config.SERVICE_NAME} is ready")
 
-    yield
-    log.info(f"{config.SERVICE_NAME} is shutting down...")
+        yield
 
-    if metrics_task:
-        log.info("Cancelling metrics_task...")
+    finally:
+        log.info(f"{config.SERVICE_NAME} is shutting down...")
 
-        metrics_task.cancel()
+        if metrics_task:
+            log.info("Cancelling metrics_task...")
 
-        try:
-            await metrics_task
+            metrics_task.cancel()
 
-        except asyncio.CancelledError:
-            log.info("metrics_task cancelled successfully")
+            try:
+                await metrics_task
+
+            except asyncio.CancelledError:
+                log.info("metrics_task cancelled successfully")
 
 
 app = FastAPI(title="FastAPI server", lifespan=lifespan_wrapper)
