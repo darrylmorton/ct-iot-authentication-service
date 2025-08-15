@@ -52,12 +52,12 @@ class AuthUtil:
             ).inc()
 
     @staticmethod
-    def encode_token(_id: UUID, _admin: bool, route_path: str, method: str):
+    def encode_token(_id: str, _admin: bool, route_path: str, method: str):
         try:
             return {
                 "token": jwt.encode(
                     {
-                        "id": str(_id),
+                        "id": _id,
                         "is_admin": _admin,
                         "exp": AuthUtil.create_token_expiry(),
                     },
