@@ -47,7 +47,7 @@ class AuthUtil:
             )
         finally:
             REQUEST_COUNT.labels(
-                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt"
+                method="GET", status=HTTPStatus.UNAUTHORIZED, path="/jwt/authentication"
             ).inc()
 
     @staticmethod
