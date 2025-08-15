@@ -1,5 +1,6 @@
 import datetime
 from http import HTTPStatus
+from uuid import UUID
 
 from fastapi import HTTPException
 from jose import jwt, JWTError, ExpiredSignatureError
@@ -51,12 +52,12 @@ class AuthUtil:
             ).inc()
 
     @staticmethod
-    def encode_token(_id: str, _admin: bool, route_path: str, method: str):
+    def encode_token(_id: UUID, _admin: bool, route_path: str, method: str):
         try:
             return {
                 "token": jwt.encode(
                     {
-                        "id": _id,
+                        "id": str(_id),
                         "is_admin": _admin,
                         "exp": AuthUtil.create_token_expiry(),
                     },

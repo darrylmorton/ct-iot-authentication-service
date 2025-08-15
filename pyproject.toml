@@ -11,7 +11,7 @@ keywords = ["ct", "iot", "authentication", "service"]
 
 [tool.poetry.dependencies]
 python = "^3.11.9"
-fastapi = {version = "^0.115.2", extras = ["standard"]}
+fastapi = {version = "^0.116.1", extras = ["standard"]}
 structlog = "^24.2.0"
 python-dotenv = "^1.0.1"
 toml = "^0.10.2"
@@ -27,7 +27,6 @@ email-validator = "^2.2.0"
 pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
 pytest-asyncio = "^0.23.7"
-
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.0"
