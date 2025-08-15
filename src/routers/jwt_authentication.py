@@ -18,6 +18,8 @@ ROUTE_PATH = "/jwt/authentication"
 async def jwt_create_authentication_token(
     payload: schemas.JwtPayload = Body(embed=False),
 ) -> JSONResponse:
+    log.info(f"*** jwt_create_authentication_token {payload=}")
+
     try:
         token = AuthUtil.encode_token(
             _id=payload.id,
@@ -25,6 +27,7 @@ async def jwt_create_authentication_token(
             route_path=ROUTE_PATH,
             method="POST",
         )
+        log.info(f"*** jwt_create_authentication_token {token=}")
 
         return JSONResponse(status_code=HTTPStatus.OK, content=token)
     except HTTPException as error:

@@ -1,6 +1,4 @@
 from http import HTTPStatus
-from typing import Annotated
-from uuid import UUID
 
 from email_validator import EmailSyntaxError, validate_email
 from fastapi import HTTPException
@@ -10,7 +8,6 @@ from pydantic import (
     Field,
     ConfigDict,
 )
-from pydantic.types import UuidVersion
 from pydantic_core.core_schema import ValidationInfo
 
 import config
@@ -22,7 +19,7 @@ from utils.confirm_account_util import ConfirmAccountUtil
 
 # TODO validate missing fields in JWT payload
 class JwtPayloadBase(BaseModel):
-    id: UUID = Annotated[UUID, UuidVersion(4)]
+    id: str
     is_admin: bool
 
     model_config = ConfigDict(
