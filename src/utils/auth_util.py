@@ -1,6 +1,5 @@
 import datetime
 from http import HTTPStatus
-from uuid import UUID
 
 from fastapi import HTTPException
 from jose import jwt, JWTError, ExpiredSignatureError
