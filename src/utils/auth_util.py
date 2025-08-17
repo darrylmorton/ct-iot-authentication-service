@@ -12,13 +12,17 @@ from utils.app_util import AppUtil
 
 class AuthUtil:
     @staticmethod
-    def create_token_expiry(_seconds=config.JWT_AUTHENTICATION_EXPIRY_SECRETS) -> datetime:
+    def create_token_expiry(
+        _seconds=config.JWT_AUTHENTICATION_EXPIRY_SECRETS,
+    ) -> datetime:
         return AppUtil.create_token_expiry(int(f"{_seconds}"))
 
     @staticmethod
     def decode_token(token: str):
         try:
-            return jwt.decode(token, config.JWT_AUTHENTICATION_SECRET, algorithms=["HS256"])
+            return jwt.decode(
+                token, config.JWT_AUTHENTICATION_SECRET, algorithms=["HS256"]
+            )
 
         except TypeError as error:
             log.debug(f"decode_token - type error {error}")
