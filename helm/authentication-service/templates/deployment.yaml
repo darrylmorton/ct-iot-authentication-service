@@ -76,7 +76,7 @@ spec:
                 secretKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-secret
                   key: jwtAuthenticationSecret
-            - name: JWT_AUTHENTICATION_EXPIRY_SECRETS
+            - name: JWT_AUTHENTICATION_EXPIRY_SECONDS
               valueFrom:
                 secretKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-secret
@@ -86,7 +86,7 @@ spec:
                 secretKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-secret
                   key: jwtConfirmAccountSecret
-            - name: JWT_CONFIRM_ACCOUNT_SECRETS
+            - name: JWT_CONFIRM_ACCOUNT_EXPIRY_SECONDS
               valueFrom:
                 secretKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-secret
