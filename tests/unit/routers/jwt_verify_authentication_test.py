@@ -12,7 +12,7 @@ class TestJwtVerifyAuthentication:
     is_admin = False
     token = jwt.encode(
         {"id": id, "is_admin": is_admin, "exp": AuthUtil.create_token_expiry()},
-        test_config.JWT_SECRET,
+        test_config.JWT_AUTHENTICATION_SECRET,
         algorithm="HS256",
     )
 
@@ -40,7 +40,7 @@ class TestJwtVerifyAuthentication:
                 "is_admin": self.is_admin,
                 "exp": AuthUtil.create_token_expiry(-1),
             },
-            test_config.JWT_SECRET,
+            test_config.JWT_AUTHENTICATION_SECRET,
             algorithm="HS256",
         )
 
@@ -57,7 +57,7 @@ class TestJwtVerifyAuthentication:
                 "is_admin": self.is_admin,
                 "exp": AuthUtil.create_token_expiry(),
             },
-            test_config.JWT_SECRET,
+            test_config.JWT_AUTHENTICATION_SECRET,
             algorithm="HS256",
         )
 
@@ -70,7 +70,7 @@ class TestJwtVerifyAuthentication:
     async def test_invalid_token_missing_id(self):
         invalid_token = jwt.encode(
             {"is_admin": self.is_admin, "exp": AuthUtil.create_token_expiry()},
-            test_config.JWT_SECRET,
+            test_config.JWT_AUTHENTICATION_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(
@@ -82,7 +82,7 @@ class TestJwtVerifyAuthentication:
     async def test_invalid_token_missing_is_admin(self):
         invalid_token = jwt.encode(
             {"id": self.id, "exp": AuthUtil.create_token_expiry()},
-            test_config.JWT_SECRET,
+            test_config.JWT_AUTHENTICATION_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(

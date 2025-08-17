@@ -11,7 +11,7 @@ class TestJwtCreateAuthentication:
     is_admin = False
     token = jwt.encode(
         {"id": id, "is_admin": is_admin, "exp": AuthUtil.create_token_expiry()},
-        test_config.JWT_SECRET,
+        test_config.JWT_AUTHENTICATION_SECRET,
         algorithm="HS256",
     )
 
@@ -60,7 +60,7 @@ class TestJwtCreateAuthentication:
         response_json = response.json()
 
         actual_result = jwt.decode(
-            response_json["token"], test_config.JWT_SECRET, algorithms=["HS256"]
+            response_json["token"], test_config.JWT_AUTHENTICATION_SECRET, algorithms=["HS256"]
         )
 
         assert response.status_code == 200
@@ -76,7 +76,7 @@ class TestJwtCreateAuthentication:
         response_json = response.json()
 
         actual_result = jwt.decode(
-            response_json["token"], test_config.JWT_SECRET, algorithms=["HS256"]
+            response_json["token"], test_config.JWT_AUTHENTICATION_SECRET, algorithms=["HS256"]
         )
 
         assert response.status_code == 200

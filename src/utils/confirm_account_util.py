@@ -12,7 +12,7 @@ from utils.app_util import AppUtil
 class ConfirmAccountUtil:
     @staticmethod
     def create_token_expiry(
-        _seconds=config.JWT_EXPIRY_SECONDS_CONFIRM_ACCOUNT,
+        _seconds=config.JWT_CONFIRM_ACCOUNT_EXPIRY_SECONDS,
     ) -> datetime:
         return AppUtil.create_token_expiry(int(f"{_seconds}"))
 
@@ -20,7 +20,7 @@ class ConfirmAccountUtil:
     def decode_token(token: str) -> dict:
         try:
             return jwt.decode(
-                token, config.JWT_SECRET_CONFIRM_ACCOUNT, algorithms=["HS256"]
+                token, config.JWT_CONFIRM_ACCOUNT_SECRET, algorithms=["HS256"]
             )
 
         except TypeError as error:
@@ -59,7 +59,7 @@ class ConfirmAccountUtil:
                         "email_type": email_type,
                         "exp": ConfirmAccountUtil.create_token_expiry(),
                     },
-                    config.JWT_SECRET_CONFIRM_ACCOUNT,
+                    config.JWT_CONFIRM_ACCOUNT_SECRET,
                     algorithm="HS256",
                 )
             }
