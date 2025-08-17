@@ -13,7 +13,7 @@ from utils.app_util import AppUtil
 class AuthUtil:
     @staticmethod
     def create_token_expiry(
-        _seconds=config.JWT_AUTHENTICATION_EXPIRY_SECRETS,
+        _seconds=config.JWT_AUTHENTICATION_EXPIRY_SECONDS,
     ) -> datetime:
         return AppUtil.create_token_expiry(int(f"{_seconds}"))
 
