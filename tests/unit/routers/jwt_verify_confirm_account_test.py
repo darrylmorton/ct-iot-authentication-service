@@ -16,7 +16,7 @@ class TestJwtVerifyConfirmAccount:
             "email_type": email_type,
             "exp": ConfirmAccountUtil.create_token_expiry(),
         },
-        test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+        test_config.JWT_CONFIRM_ACCOUNT_SECRET,
         algorithm="HS256",
     )
 
@@ -44,7 +44,7 @@ class TestJwtVerifyConfirmAccount:
                 "email_type": self.email_type,
                 "exp": ConfirmAccountUtil.create_token_expiry(-1),
             },
-            test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+            test_config.JWT_CONFIRM_ACCOUNT_SECRET,
             algorithm="HS256",
         )
 
@@ -61,7 +61,7 @@ class TestJwtVerifyConfirmAccount:
                 "email_type": self.email_type,
                 "exp": ConfirmAccountUtil.create_token_expiry(),
             },
-            test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+            test_config.JWT_CONFIRM_ACCOUNT_SECRET,
             algorithm="HS256",
         )
 
@@ -77,7 +77,7 @@ class TestJwtVerifyConfirmAccount:
                 "email_type": self.email_type,
                 "exp": ConfirmAccountUtil.create_token_expiry(),
             },
-            test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+            test_config.JWT_CONFIRM_ACCOUNT_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(
@@ -92,7 +92,7 @@ class TestJwtVerifyConfirmAccount:
                 "username": self.username,
                 "exp": ConfirmAccountUtil.create_token_expiry(),
             },
-            test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+            test_config.JWT_CONFIRM_ACCOUNT_SECRET,
             algorithm="HS256",
         )
         response = await RoutesHelper.http_client(

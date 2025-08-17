@@ -15,7 +15,7 @@ class TestJwtCreateConfirmAccount:
             "email_type": email_type,
             "exp": ConfirmAccountUtil.create_token_expiry(),
         },
-        test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+        test_config.JWT_CONFIRM_ACCOUNT_SECRET,
         algorithm="HS256",
     )
 
@@ -65,7 +65,7 @@ class TestJwtCreateConfirmAccount:
 
         actual_result = jwt.decode(
             response_json["token"],
-            test_config.JWT_SECRET_CONFIRM_ACCOUNT,
+            test_config.JWT_CONFIRM_ACCOUNT_SECRET,
             algorithms=["HS256"],
         )
 

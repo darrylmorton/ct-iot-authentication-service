@@ -71,16 +71,26 @@ spec:
                 configMapKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-config
                   key: uvicornPort
-            - name: JWT_SECRET
+            - name: JWT_AUTHENTICATION_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-secret
-                  key: jwtSecret
-            - name: JWT_EXPIRY_SECONDS
+                  key: jwtAuthenticationSecret
+            - name: JWT_AUTHENTICATION_EXPIRY_SECRETS
               valueFrom:
                 secretKeyRef:
                   name: {{ include "authentication-service.fullname" . }}-secret
-                  key: jwtExpirySeconds
+                  key: jwtAuthenticationExpirySeconds
+            - name: JWT_CONFIRM_ACCOUNT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-secret
+                  key: jwtConfirmAccountSecret
+            - name: JWT_CONFIRM_ACCOUNT_SECRETS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "authentication-service.fullname" . }}-secret
+                  key: jwtConfirmAccountExpirySeconds
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

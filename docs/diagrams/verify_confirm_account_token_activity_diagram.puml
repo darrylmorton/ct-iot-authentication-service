@@ -1,0 +1,30 @@
+@startuml
+title Verify Confirm Account Token Activity Diagram
+
+:Request;
+note
+    GET - /jwt/confirm-account
+end note
+
+:Authentication Service;
+
+skinparam ActivityDiamondBackgroundColor orchid
+switch (JWT_ERROR?)
+case (no)
+    #limegreen:Return 200;
+    kill;
+case (TypeError)
+    #tomato:Return 400;
+    kill;
+case (KeyError)
+    #tomato:Return 401;
+    kill;
+case (JWTError)
+    #tomato:Return 401;
+    kill;
+case (ExpiredSignatureError)
+    #tomato:Return 498;
+    kill;
+endswitch
+
+@enduml
